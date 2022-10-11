@@ -124,14 +124,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             cardDetailBox.SetAsLastSibling();
             cardDetailBox.gameObject.SetActive(true);
         }
-        if (IsshopCard || Dragging)
+        if (IsshopCard || Dragging || data.mana > GameManager.Inst.battle.Mana)
             return;
         startPoint = rect.anchoredPosition;
         moveBegin = eventData.position;
     }
     public void OnDrag(PointerEventData eventData)
     {
-        if (IsshopCard)
+        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana)
             return;
         GameManager.Inst.battle.cardDragging = true;
         if (!IsUse)
@@ -180,7 +180,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (IsshopCard)
+        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana)
             return;
         GameManager.Inst.battle.cardDragging = false;
         if (!IsUse)
@@ -204,6 +204,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     image.color = new Color(0.5f, 0.5f, 0.5f);
                     card.color = new Color(0.5f, 0.5f, 0.5f);
                     IsUse = true;
+                    GameManager.Inst.battle.Mana -= data.mana;
                 }
             }
             if(isTargetting)
@@ -214,6 +215,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 GameManager.Inst.battle.Target = hit.collider.GetComponent<Character>();
                 GameManager.Inst.battle.SetEff(data.eff);
                 Cursor.SetCursor(GameManager.Inst.CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+                GameManager.Inst.battle.Mana -= data.mana;
                 return;
             }
             if(hit.collider != null && Array.IndexOf(data.category, "target") == -1)
@@ -223,6 +225,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 card.color = new Color(0.5f, 0.5f, 0.5f);
                 GameManager.Inst.battle.SetEff(data.eff);
                 Cursor.SetCursor(GameManager.Inst.CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+                GameManager.Inst.battle.Mana -= data.mana;
                 return;
             }
         }

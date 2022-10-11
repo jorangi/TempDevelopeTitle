@@ -31,12 +31,12 @@ public class Character : MonoBehaviour
             }
         }
     }
-    public string[] FindCard(params string[] tag)
+    public string[] FindCards(params string[] tag)
     {
         List<string> tempCard = new();
         foreach (var card in GameManager.Inst.cardJson)
         {
-            if(card["id"].ToString() == tag[0].ToString())
+            if(System.Array.IndexOf(cards.ToArray(), card["id"].ToString())>-1)
             foreach(string tagItem in tag)
             {
                 if (System.Array.IndexOf(card["category"].ToObject<string[]>(), tagItem) > -1)
@@ -47,5 +47,21 @@ public class Character : MonoBehaviour
             }
         }
         return tempCard.ToArray();
+    }
+    public Card FindCard(string id)
+    {
+        Card data = new();
+        foreach (var card in GameManager.Inst.cardJson)
+        {
+            if (card["id"].ToString() == id)
+            {
+                data.eff = card["eff"].ToObject<string[]>();
+                break;
+            }
+        }
+        return data;
+    }
+    public virtual void OnTurn()
+    {
     }
 }

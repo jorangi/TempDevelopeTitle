@@ -359,7 +359,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10 (+1)
+  m_text: 1 / 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a753993388457354bbc9106014a2798c, type: 2}
   m_sharedMaterial: {fileID: 1779858114726689830, guid: a753993388457354bbc9106014a2798c, type: 2}
@@ -1028,9 +1028,9 @@ MonoBehaviour:
   giveEff: []
   effResist: []
   myEff: []
+  cards: []
   mhp: 100
   Gold: 0
-  cards: []
 --- !u!4 &190343358
 Transform:
   m_ObjectHideFlags: 0
@@ -3754,7 +3754,7 @@ GameObject:
   - component: {fileID: 998558601}
   - component: {fileID: 998558600}
   m_Layer: 8
-  m_Name: Enemy
+  m_Name: Enemy3
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3777,6 +3777,7 @@ MonoBehaviour:
   giveEff: []
   effResist: []
   myEff: []
+  cards: []
   mhp: 100
 --- !u!61 &998558601
 BoxCollider2D:
@@ -6287,7 +6288,7 @@ GameObject:
   - component: {fileID: 1676799980}
   - component: {fileID: 1676799981}
   m_Layer: 8
-  m_Name: Enemy
+  m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6403,6 +6404,7 @@ MonoBehaviour:
   giveEff: []
   effResist: []
   myEff: []
+  cards: []
   mhp: 100
 --- !u!1001 &1719284544
 PrefabInstance:
@@ -7931,7 +7933,7 @@ GameObject:
   - component: {fileID: 2069006684}
   - component: {fileID: 2069006683}
   m_Layer: 8
-  m_Name: Enemy
+  m_Name: Enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7954,6 +7956,7 @@ MonoBehaviour:
   giveEff: []
   effResist: []
   myEff: []
+  cards: []
   mhp: 100
 --- !u!61 &2069006684
 BoxCollider2D:

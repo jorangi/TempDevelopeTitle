@@ -13,11 +13,13 @@ public class Enemy : Character
             hp = Mathf.Clamp(value, 0, mhp);
             if (hp == 0)
             {
-                Debug.Log("Á×À½");
+                //Debug.Log("Á×À½");
+                isDead = true;
                 GetComponent<Collider2D>().enabled = false;
             }
         }
     }
+    public bool isDead = false;
     private float timer = 0;
     public float Timer
     {
@@ -48,5 +50,12 @@ public class Enemy : Character
     {
         Timer = 0;
         GameManager.Inst.battle.EnemyInfo.SetActive(false);
+    }
+    public override void OnTurn()
+    {
+        base.OnTurn();
+        string[] damageCards = FindCards("damage");
+        GameManager.Inst.battle.SetEff(FindCard(damageCards[Random.Range(0, damageCards.Length)]).eff);
+        GameManager.Inst.battle.TurnEnd();
     }
 }

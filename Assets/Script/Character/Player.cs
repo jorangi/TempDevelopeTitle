@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Player : Character
 {
-    public int mhp = 100;
+    public int mhp;
     public int HP
     {
         get => hp;
@@ -19,13 +19,15 @@ public class Player : Character
 
             if (hp == 0)
             {
-                Debug.Log("Á×À½");
+                //Debug.Log("Á×À½");
             }
         }
     }
     public int Gold = 0;
     private void Start()
     {
+        mhp = int.MaxValue;
+        HP = int.MaxValue;
         cards = new();
         foreach (var card in GameManager.Inst.cardJson)
         {

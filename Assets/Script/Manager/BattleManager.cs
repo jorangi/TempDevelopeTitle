@@ -21,33 +21,49 @@ public class BattleManager : MonoBehaviour
         get => index;
         set
         {
+            if (value > order.Count - 1)
+            {
+                for(int i = 0; i < order.Count; i++)
+                {
+                    if (order[i].hp > 0)
+                    {
+                        value = i;
+                        break;
+                    }
+                }
+                if(value == 0)
+                {
+                    SetRandomCard();
+                }
+                else if(value == order.Count)
+                {
+                    return;
+                }
+            }
             Target = null;
             index = value;
-            if(index != 0)
+            Caster = order[index];
+            if (Caster.hp == 0)
+            {
+                Index++;
+                return;
+            }
+            else
+            {
+                TurnStart();
+            }
+            if (index != 0)
             {
                 CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = false;
                 CardUI.transform.parent.Find("DisinteractPanel").SetAsLastSibling();
                 CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(true);
+                Target = GameManager.Inst.player;
+                order[index].OnTurn();
             }
             else
             {
                 CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = true;
                 CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(false);
-                order[index].
-            }
-            if(index > order.Count - 1)
-            {
-                index = 0;
-                SetRandomCard();
-            }
-            Caster = order[index];
-            if (Caster.hp == 0)
-            {
-                Index++;
-            }
-            else
-            {
-                TurnStart();
             }
         }
     }
@@ -140,7 +156,11 @@ public class BattleManager : MonoBehaviour
     }
     public void TurnStart()
     {
-        maxMana = Mathf.Min(++maxMana, 10);
+        if(Caster.CompareTag("Player"))
+        {
+            maxMana = Mathf.Min(++maxMana, 10);
+            Mana = maxMana;
+        }
         foreach (var data in order)
         {
             foreach (var Eff in data.myEff)
@@ -521,9 +541,11 @@ public class BattleManager : MonoBehaviour
     }
     private void ExcuteEff(Character _target, Eff eff, Enums.moment moment = Enums.moment.Immediately)
     {
+        Debug.Log(_target);
+        Debug.Log(eff.run);
+        Debug.Log(eff.eff == Enums.eff.Heal);
         if (eff.run && (eff.eff == Enums.eff.Damage || eff.eff == Enums.eff.Heal || eff.eff == Enums.eff.Mana || eff.eff == Enums.eff.Inflict || eff.eff == Enums.eff.Receive))
             return;
-
         if(_target.GetComponent<Player>() != null)
         {
             var target = _target.GetComponent<Player>();
@@ -575,6 +597,11 @@ public class BattleManager : MonoBehaviour
         else
         {
             var target = _target.GetComponent<Enemy>();
+            if (target.isDead)
+            {
+                eff.run = true;
+                return;
+            }
 
             if (eff.eff == Enums.eff.Damage)
             {

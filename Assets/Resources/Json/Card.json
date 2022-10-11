@@ -163,7 +163,10 @@
     "desc": "모두의 체력을 {0_3}만큼 회복한다.",
     "category": [ "test", "basic", "heal", "entire" ],
     "synergy": [ "test" ],
-    "eff": [ "Entire Heal Immediately 1" ]
+    "eff": [
+      "Self Heal Immediately 1",
+      "Enemies Heal Immediately 1"
+    ]
   },
   {
     "id": "TestEntireHealCard2",
@@ -173,7 +176,10 @@
     "desc": "모두의 체력을 {0_3}만큼 회복한다.",
     "category": [ "test", "basic", "heal", "entire" ],
     "synergy": [ "test" ],
-    "eff": [ "Entire Heal Immediately 999999" ]
+    "eff": [
+      "Self Heal Immediately 999999",
+      "Enemies Heal Immediately 999999"
+    ]
   },
   {
     "id": "TestManaRecoverCard",
