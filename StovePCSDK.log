@@ -1,0 +1,44 @@
+﻿2022-10-06 17:48:20.183 INFO  [48448] file Appender.(level: DEBUG)
+2022-10-06 17:48:20.184 INFO  [48448] Log file path: E:\Develop\TempDevelopeTitle\StovePCSDK.log
+2022-10-06 17:48:20.184 INFO  [48448] ---------------------------------------------
+2022-10-06 17:48:20.184 INFO  [48448] StovePCSDK(ver:2.3.2)
+2022-10-06 17:48:20.184 INFO  [48448] ---------------------------------------------
+2022-10-06 17:48:20.185 DEBUG [48448]     osPlatform : 64bit
+2022-10-06 17:48:20.185 DEBUG [48448]     osVersion : Windows 10(10.0), 10.0.19044, 64bit
+2022-10-06 17:48:20.185 DEBUG [48448]     init tasks
+2022-10-06 17:48:20.185 DEBUG [48448]     uuid : 5d45c40c-2faa-40f5-9bf4-a3b3c725013d
+2022-10-06 17:48:20.584 INFO  [48448]     Init sgup success
+2022-10-06 17:48:20.586 DEBUG [48448] --> Elapsed times(until main return): 402ms
+2022-10-06 17:48:20.586 DEBUG [44224]     Get Server Config(url: https://api.onstove.com/ssg/default/clients/pcsdk/1.0.0/PCSDKConfig/)
+2022-10-06 17:48:20.879 INFO  [46008]     Get Ownership_url has succeed.
+2022-10-06 17:48:20.880 INFO  [44224]     Log SetEnable is true
+2022-10-06 17:48:20.880 DEBUG [44224]     log data:
+ {"action_info":{"action_param":{},"action_type":"pcsdk.init.try_async"},"client_time":"2022-10-06 17:48:20","device_os":"Windows 10(10.0), 10.0.19044, 64bit","environment":"live","game_id":"\tAAAtelier_FirstGame","guid":"","log_source_type":"pc_sdk","member_no":"","sdk_version":"2.3.2"}
+2022-10-06 17:48:20.880 DEBUG [44224]     RemoteLog url: https://logs.81plug.com/std_stove
+2022-10-06 17:48:20.880 INFO  [44224] --> SGUPAPI_GetAuthToken
+2022-10-06 17:48:20.880 INFO  [44224]      current process id: 40796
+2022-10-06 17:48:20.881 DEBUG [44224]      game id : 	AAAtelier_FirstGame
+2022-10-06 17:48:21.064 DEBUG [55284]     -StoveLog rest: response is 200
+2022-10-06 17:48:21.064 DEBUG [55284]      -  Send remote log success.
+2022-10-06 18:06:33.998 INFO  [39152] file Appender.(level: DEBUG)
+2022-10-06 18:06:33.998 INFO  [39152] Log file path: E:\Develop\TempDevelopeTitle\StovePCSDK.log
+2022-10-06 18:06:33.998 INFO  [39152] ---------------------------------------------
+2022-10-06 18:06:33.998 INFO  [39152] StovePCSDK(ver:2.3.2)
+2022-10-06 18:06:33.998 INFO  [39152] ---------------------------------------------
+2022-10-06 18:06:33.998 DEBUG [39152]     osPlatform : 64bit
+2022-10-06 18:06:33.998 DEBUG [39152]     osVersion : Windows 10(10.0), 10.0.19044, 64bit
+2022-10-06 18:06:33.998 DEBUG [39152]     init tasks
+2022-10-06 18:06:33.998 DEBUG [39152]     uuid : 7598958e-111b-4211-86b0-1e95c4f4b744
+2022-10-06 18:06:34.003 INFO  [39152]     Init sgup success
+2022-10-06 18:06:34.004 DEBUG [1304]     Get Server Config(url: https://api.onstove.com/ssg/default/clients/pcsdk/1.0.0/PCSDKConfig/)
+2022-10-06 18:06:34.004 DEBUG [39152] --> Elapsed times(until main return): 6ms
+2022-10-06 18:06:34.226 INFO  [1968]     Get Ownership_url has succeed.
+2022-10-06 18:06:34.227 INFO  [1304]     Log SetEnable is true
+2022-10-06 18:06:34.227 DEBUG [1304]     log data:
+ {"action_info":{"action_param":{},"action_type":"pcsdk.init.try_async"},"client_time":"2022-10-06 18:06:34","device_os":"Windows 10(10.0), 10.0.19044, 64bit","environment":"live","game_id":"\tAAAtelier_FirstGame","guid":"","log_source_type":"pc_sdk","member_no":"","sdk_version":"2.3.2"}
+2022-10-06 18:06:34.227 DEBUG [1304]     RemoteLog url: https://logs.81plug.com/std_stove
+2022-10-06 18:06:34.227 INFO  [1304] --> SGUPAPI_GetAuthToken
+2022-10-06 18:06:34.227 INFO  [1304]      current process id: 20240
+2022-10-06 18:06:34.227 DEBUG [1304]      game id : 	AAAtelier_FirstGame
+2022-10-06 18:06:34.291 DEBUG [19628]     -StoveLog rest: response is 200
+2022-10-06 18:06:34.291 DEBUG [19628]      -  Send remote log success.
