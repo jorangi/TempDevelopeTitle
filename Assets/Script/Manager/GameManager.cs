@@ -19,9 +19,9 @@ public class GameManager : MonoBehaviour
     }
     public BattleManager battle;
     public Player player;
-    public TextAsset CardJson, EffJson;
-    public JArray cardJson, effJson;
-    public Sprite CursorImg, AttackCursor;
+    public TextAsset CardJson, EffJson, CharacterJson;
+    public JArray cardJson, effJson, characterJson;
+    public Texture2D CursorImg, AttackCursor;
 
     private void Awake()
     {
@@ -37,7 +37,8 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 120;
         cardJson = JArray.Parse(CardJson.text);
         effJson = JArray.Parse(EffJson.text);
-        Cursor.SetCursor(CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+        characterJson = JArray.Parse(CharacterJson.text);
+        Cursor.SetCursor(CursorImg, Vector2.zero, CursorMode.ForceSoftware);
         player = FindObjectOfType<Player>();
         battle = FindObjectOfType<BattleManager>();
     }

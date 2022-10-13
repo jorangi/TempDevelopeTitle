@@ -8,13 +8,13 @@ using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
+    public GameObject EnemyObject;
     public GameObject CardUI;
     public GameObject ShopUI;
     public GameObject EnemyInfo;
 
     private int index = 0;
     private int mana = 0;
-    private int gold = 0;
 
     public int Index
     {
@@ -33,6 +33,10 @@ public class BattleManager : MonoBehaviour
                 }
                 if(value == 0)
                 {
+                    for(int i = 1; i<order.Count; i++)
+                    {
+                        order[i].TurnUseCard = order[i].cards[UnityEngine.Random.Range(0, order[i].cards.Count)];
+                    }
                     SetRandomCard();
                 }
                 else if(value == order.Count)
@@ -82,15 +86,6 @@ public class BattleManager : MonoBehaviour
             ManaText.text = $"{value}/{maxMana}";
         }
     }
-    public int Gold
-    {
-        get => gold;
-        set
-        {
-            gold = value;
-            GoldText.text = $"{value} G";
-        }
-    }
     public bool cardDragging = false;
 
     private void Awake()
@@ -102,8 +97,45 @@ public class BattleManager : MonoBehaviour
         order = FindObjectsOfType<Character>().ToList();
         Index = 0;
         Mana = maxMana;
-        Gold = 0;
         GameManager.Inst.player.HP = GameManager.Inst.player.mhp;
+        EnemySpawn("slime");
+        EnemySpawn("cerberus");
+        EnemySpawn("wolf");
+    }
+    public void EnemySpawn(string id)
+    {
+        GameObject Enemy = Instantiate(EnemyObject);
+        Enemy.name = "Enemy";
+        Enemy data = Enemy.GetComponent<Enemy>();
+        foreach(var character in GameManager.Inst.characterJson)
+        {
+            if (character["id"].ToString() == id)
+            {
+                Enemy.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Images/Unit/{id}");
+                Enemy.GetComponent<BoxCollider2D>().size = new(Enemy.GetComponent<SpriteRenderer>().sprite.texture.width / 150.0f, Enemy.GetComponent<SpriteRenderer>().sprite.texture.height / 150.0f);
+                data.id = character["id"].ToString();
+                data.mhp = character["hp"].ToObject<int>();
+                data.HP = data.mhp;
+                foreach (var card in character["cards"].ToObject<string[]>())
+                {
+                    data.AddCard(card);
+                }
+                foreach(var resist in character["resist"].ToObject<string[]>())
+                {
+                    data.SetResist(resist);
+                }
+                break;
+            }
+        }
+        order.Add(data);
+        AdjustPos();
+    }
+    public void AdjustPos()
+    {
+        for(int i = 1; i<order.Count; i++)
+        {
+            order[i].transform.position = new Vector3(-Mathf.Min(order.Count - 2, 1) * 5 + ((float)(i - 1) / Mathf.Max(1, (order.Count - 2))) * 10, 1.5f, 0);
+        }
     }
     public void SetRandomCard()
     {
@@ -227,7 +259,7 @@ public class BattleManager : MonoBehaviour
             string[] effItem = eff.Split(' ');
 
             float resist = 0.0f;
-            if (effItem[0] == "Target") // ÁöÁ¤ÇÑ ´ÜÀÏ ´ë»ó
+            if (effItem[0] == "Target") // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             {
                 bool haveEff = false;
                 foreach (var Eff in Target.effResist)
@@ -240,9 +272,9 @@ public class BattleManager : MonoBehaviour
                 }
                 foreach(var Eff in Target.myEff)
                 {
-                    if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ÁßÃ¸ÀÌ µÇ´Â¿¡ ÇÑÇØ¼­¸¸ Eff
+                    if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´Â¿ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ Eff
                     {
-                        if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ÀÌ¹Ì º¸À¯ÇÑ Eff
+                        if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Eff
                         {
                             haveEff = true;
                             if (effItem.Length == 4)
@@ -262,7 +294,7 @@ public class BattleManager : MonoBehaviour
                 }
                 if(!haveEff)
                 {
-                    //ÁßÃ¸ÀÌ µÇÁö ¾Ê´Â Eff
+                    //ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Eff
                     if ((Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Damage || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Heal || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Mana || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Inflict || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Receive)
                     {
                         if (effItem.Length == 5)
@@ -276,7 +308,7 @@ public class BattleManager : MonoBehaviour
                             Target.myEff.Add(_eff);
                         }
                     }
-                    else // ÁßÃ¸ÀÌ µÇ´Â Eff
+                    else // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´ï¿½ Eff
                     {
                         if (effItem.Length == 5)
                         {
@@ -312,9 +344,9 @@ public class BattleManager : MonoBehaviour
                 }
                 foreach (var Eff in Caster.myEff)
                 {
-                    if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ÁßÃ¸ÀÌ µÇ´Â¿¡ ÇÑÇØ¼­¸¸ Eff
+                    if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´Â¿ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ Eff
                     {
-                        if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ÀÌ¹Ì º¸À¯ÇÑ Eff
+                        if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Eff
                         {
                             haveEff = true;
                             if (effItem.Length == 4)
@@ -334,7 +366,7 @@ public class BattleManager : MonoBehaviour
                 }
                 if (!haveEff)
                 {
-                    //ÁßÃ¸ÀÌ µÇÁö ¾Ê´Â Eff
+                    //ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Eff
                     if ((Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Damage || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Heal || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Mana || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Inflict || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Receive)
                     {
                         if (effItem.Length == 5)
@@ -348,7 +380,7 @@ public class BattleManager : MonoBehaviour
                             Caster.myEff.Add(_eff);
                         }
                     }
-                    else // ÁßÃ¸ÀÌ µÇ´Â Eff
+                    else // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´ï¿½ Eff
                     {
                         if (effItem.Length == 5)
                         {
@@ -391,9 +423,9 @@ public class BattleManager : MonoBehaviour
                         }
                         foreach (var Eff in Target.myEff)
                         {
-                            if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ÁßÃ¸ÀÌ µÇ´Â¿¡ ÇÑÇØ¼­¸¸ Eff
+                            if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´Â¿ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ Eff
                             {
-                                if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ÀÌ¹Ì º¸À¯ÇÑ Eff
+                                if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Eff
                                 {
                                     haveEff = true;
                                     if (effItem.Length == 4)
@@ -413,7 +445,7 @@ public class BattleManager : MonoBehaviour
                         }
                         if (!haveEff)
                         {
-                            //ÁßÃ¸ÀÌ µÇÁö ¾Ê´Â Eff
+                            //ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Eff
                             if ((Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Damage || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Heal || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Mana || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Inflict || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Receive)
                             {
                                 if (effItem.Length == 5)
@@ -427,7 +459,7 @@ public class BattleManager : MonoBehaviour
                                     Target.myEff.Add(_eff);
                                 }
                             }
-                            else // ÁßÃ¸ÀÌ µÇ´Â Eff
+                            else // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´ï¿½ Eff
                             {
                                 if (effItem.Length == 5)
                                 {
@@ -466,9 +498,9 @@ public class BattleManager : MonoBehaviour
                     }
                     foreach (var Eff in Target.myEff)
                     {
-                        if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ÁßÃ¸ÀÌ µÇ´Â¿¡ ÇÑÇØ¼­¸¸ Eff
+                        if (!(Eff.eff == Enums.eff.Damage || Eff.eff == Enums.eff.Heal || Eff.eff == Enums.eff.Mana || Eff.eff == Enums.eff.Inflict || Eff.eff == Enums.eff.Receive)) // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´Â¿ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ Eff
                         {
-                            if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ÀÌ¹Ì º¸À¯ÇÑ Eff
+                            if (Eff.eff == (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1])) // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Eff
                             {
                                 haveEff = true;
                                 if (effItem.Length == 5)
@@ -492,7 +524,7 @@ public class BattleManager : MonoBehaviour
                     }
                     if (!haveEff)
                     {
-                        //ÁßÃ¸ÀÌ µÇÁö ¾Ê´Â Eff
+                        //ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Eff
                         if ((Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Damage || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Heal || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Mana || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Inflict || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Receive)
                         {
                             if (effItem.Length == 5)
@@ -506,7 +538,7 @@ public class BattleManager : MonoBehaviour
                                 Target.myEff.Add(_eff);
                             }
                         }
-                        else // ÁßÃ¸ÀÌ µÇ´Â Eff
+                        else // ï¿½ï¿½Ã¸ï¿½ï¿½ ï¿½Ç´ï¿½ Eff
                         {
                             if (effItem.Length == 4)
                             {
@@ -541,9 +573,6 @@ public class BattleManager : MonoBehaviour
     }
     private void ExcuteEff(Character _target, Eff eff, Enums.moment moment = Enums.moment.Immediately)
     {
-        Debug.Log(_target);
-        Debug.Log(eff.run);
-        Debug.Log(eff.eff == Enums.eff.Heal);
         if (eff.run && (eff.eff == Enums.eff.Damage || eff.eff == Enums.eff.Heal || eff.eff == Enums.eff.Mana || eff.eff == Enums.eff.Inflict || eff.eff == Enums.eff.Receive))
             return;
         if(_target.GetComponent<Player>() != null)
@@ -706,10 +735,11 @@ public class BattleManager : MonoBehaviour
     public void ShowEnemyInfo(Character data)
     {
         EnemyInfo.SetActive(true);
-        EnemyInfo.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition.x < (Screen.width / 3) * 2? ((Vector2)Input.mousePosition * new Vector2(1920.0f / Screen.width, 0) + new Vector2(150.0f, 0)) : ((Vector2)Input.mousePosition  * new Vector2(1920.0f / Screen.width, 0) + new Vector2(-450.0f, 0));
-        EnemyInfo.transform.Find("Inflict").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.giveEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.giveEff[(int)Enums.effType.Damage].add}";
-        EnemyInfo.transform.Find("Receive").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.takeEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Damage].add}";
-        EnemyInfo.transform.Find("Burn").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Burn].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Burn].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Burn].add}";
-        EnemyInfo.transform.Find("Poison").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Poison].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Poison].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Poison].add}";
+        EnemyInfo.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition.x < (Screen.width / 3) * 2? ((Vector2)Input.mousePosition * new Vector2(1920.0f / Screen.width, 0) + new Vector2(100.0f, 0)) : ((Vector2)Input.mousePosition  * new Vector2(1920.0f / Screen.width, 0) + new Vector2(-700.0f, 0));
+        EnemyInfo.transform.Find("EnemyInfo").Find("Inflict").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.giveEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.giveEff[(int)Enums.effType.Damage].add}";
+        EnemyInfo.transform.Find("EnemyInfo").Find("Receive").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.takeEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Damage].add}";
+        EnemyInfo.transform.Find("EnemyInfo").Find("Burn").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Burn].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Burn].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Burn].add}";
+        EnemyInfo.transform.Find("EnemyInfo").Find("Poison").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Poison].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Poison].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Poison].add}";
+        EnemyInfo.transform.Find("Card").GetComponent<CardData>().SetCardData(data.TurnUseCard);
     }
 }

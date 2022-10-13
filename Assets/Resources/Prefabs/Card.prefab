@@ -192,7 +192,7 @@ MonoBehaviour:
   Gold: {fileID: 0}
   Name: {fileID: 5440729583454962934}
   Desc: {fileID: 4636550356048226806}
-  card: {fileID: 3778461680358338737}
+  cardImage: {fileID: 3778461680358338737}
   image: {fileID: 2874082832673140715}
   id: 
 --- !u!225 &-7870975354674357627

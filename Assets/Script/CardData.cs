@@ -22,7 +22,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Card data;
     public TextMeshProUGUI Mana, Gold, Name, Desc;
-    public Image card, image;
+    public Image cardImage, image;
     public string id;
 
     private bool IsUse;
@@ -56,6 +56,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 };
 
                 image.sprite = Resources.Load<Sprite>($"Images/Card/{id}");
+                cardImage.sprite = Resources.Load<Sprite>($"Images/Card/{data.category[0]}Card");
                 DisplayData();
                 return;
             }
@@ -66,8 +67,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if(Gold != null)
         {
             Mana.text = data.mana.ToString();
-            Gold.text = $"{data.gold.ToString()} G";
+            Gold.text = $"{data.gold} G";
             IsshopCard = true;
+            cardImage.sprite = Resources.Load<Sprite>($"Images/Card/{data.category[0]}ShopCard");
         }
         else
         {
@@ -95,7 +97,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         IsUse = false;
         image.color = new (1.0f, 1.0f, 1.0f);
-        card.color = new(1.0f, 1.0f, 1.0f);
+        cardImage.color = new(1.0f, 1.0f, 1.0f);
         img = null;
     }
     private IEnumerator ResetPosition()
@@ -121,6 +123,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 mana = data.mana,
                 eff = data.eff
             };
+            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().image.sprite = Resources.Load<Sprite>($"Images/Card/{id}");
+            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().card.sprite = Resources.Load<Sprite>($"Images/Card/{data.category[0]}Card");
             cardDetailBox.SetAsLastSibling();
             cardDetailBox.gameObject.SetActive(true);
         }
@@ -136,7 +140,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         GameManager.Inst.battle.cardDragging = true;
         if (!IsUse)
         {
-            Cursor.SetCursor(GameManager.Inst.CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+            Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
             Dragging = true;
             bool onSpawnable = false;
             RaycastHit2D hit = Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, transform.forward, 100.0f, LayerMask.GetMask("Field"));
@@ -149,7 +153,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             if (isTargetting)
             {
                 canvasGroup.alpha = 0;
-                Cursor.SetCursor(GameManager.Inst.AttackCursor.texture, Vector2.zero, CursorMode.ForceSoftware);
+                Cursor.SetCursor(GameManager.Inst.AttackCursor, Vector2.zero, CursorMode.ForceSoftware);
             }
             foreach (var result in results)
             {
@@ -202,7 +206,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     };
                     result.gameObject.GetComponent<SpawnSlotData>().FilledSlot = true;
                     image.color = new Color(0.5f, 0.5f, 0.5f);
-                    card.color = new Color(0.5f, 0.5f, 0.5f);
+                    cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                     IsUse = true;
                     GameManager.Inst.battle.Mana -= data.mana;
                 }
@@ -211,10 +215,10 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 IsUse = true;
                 image.color = new Color(0.5f, 0.5f, 0.5f);
-                card.color = new Color(0.5f, 0.5f, 0.5f);
+                cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 GameManager.Inst.battle.Target = hit.collider.GetComponent<Character>();
                 GameManager.Inst.battle.SetEff(data.eff);
-                Cursor.SetCursor(GameManager.Inst.CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+                Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
                 GameManager.Inst.battle.Mana -= data.mana;
                 return;
             }
@@ -222,9 +226,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 IsUse = true;
                 image.color = new Color(0.5f, 0.5f, 0.5f);
-                card.color = new Color(0.5f, 0.5f, 0.5f);
+                cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 GameManager.Inst.battle.SetEff(data.eff);
-                Cursor.SetCursor(GameManager.Inst.CursorImg.texture, Vector2.zero, CursorMode.ForceSoftware);
+                Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
                 GameManager.Inst.battle.Mana -= data.mana;
                 return;
             }
@@ -236,9 +240,10 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             if(data.gold <= GameManager.Inst.player.Gold)
             {
+                GameManager.Inst.player.Gold -= data.gold;
                 GameManager.Inst.player.AddCard(id);
                 image.color = new Color(0.5f, 0.5f, 0.5f);
-                card.color = new Color(0.5f, 0.5f, 0.5f);
+                cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 IsUse = true;
             }
         }

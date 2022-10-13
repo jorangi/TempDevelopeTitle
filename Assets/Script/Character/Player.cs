@@ -23,12 +23,21 @@ public class Player : Character
             }
         }
     }
-    public int Gold = 0;
+    public int gold = 0;
+    public int Gold
+    {
+        get => gold;
+        set
+        {
+            gold = value;
+            GameManager.Inst.battle.GoldText.text = $"{value} G";
+        }
+    }
     private void Start()
     {
-        mhp = int.MaxValue;
-        HP = int.MaxValue;
-        cards = new();
+        mhp = 100;
+        HP = mhp;
+        Gold = 100;
         foreach (var card in GameManager.Inst.cardJson)
         {
             cards.Add(card["id"].ToString());

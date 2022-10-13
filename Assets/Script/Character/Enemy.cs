@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : Character
 {
+    public string id = string.Empty;
+    public Transform HPBar;
+    private TextMeshPro HPValue;
     public int mhp = 100;
     public int HP
     {
@@ -11,6 +15,8 @@ public class Enemy : Character
         set
         {
             hp = Mathf.Clamp(value, 0, mhp);
+            HPBar.localScale = new((float)hp/mhp, 1, 1);
+            HPValue.text = $"{hp} / {mhp}";
             if (hp == 0)
             {
                 //Debug.Log("Á×À½");
@@ -33,13 +39,15 @@ public class Enemy : Character
             }
         }
     }
+    protected override void Awake()
+    {
+        base.Awake();
+        HPValue = GetComponentInChildren<TextMeshPro>();
+    }
     private void Start()
     {
-        cards = new();
-        foreach (var card in GameManager.Inst.cardJson)
-        {
-            cards.Add(card["id"].ToString());
-        }
+        HPBar.parent.localPosition = new(-0.75f, Mathf.Max(1, (GetComponent<SpriteRenderer>().sprite.texture.height - 150.0f)/100.0f));
+        TurnUseCard = cards[Random.Range(0, cards.Count)];
     }
     private void OnMouseOver()
     {
@@ -54,8 +62,7 @@ public class Enemy : Character
     public override void OnTurn()
     {
         base.OnTurn();
-        string[] damageCards = FindCards("damage");
-        GameManager.Inst.battle.SetEff(FindCard(damageCards[Random.Range(0, damageCards.Length)]).eff);
+        GameManager.Inst.battle.SetEff(FindCard(TurnUseCard).eff);
         GameManager.Inst.battle.TurnEnd();
     }
 }
