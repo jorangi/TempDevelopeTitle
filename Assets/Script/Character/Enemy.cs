@@ -27,6 +27,7 @@ public class Enemy : Character
         obj.GetComponent<CardData>().SetCardData(TurnUseCard);
         obj.GetComponent<Image>().raycastTarget = false;
         obj.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(transform.position);
+        obj.GetComponent<CardData>().ReplaceDesc(GameManager.Inst.player);
         yield return StartCoroutine(obj.GetComponent<CardData>().UseCard());
         yield return new WaitForSeconds(1);
         GameManager.Inst.battle.SetEff(FindCard(TurnUseCard).eff);

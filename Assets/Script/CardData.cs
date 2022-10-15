@@ -29,6 +29,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Coroutine useCard = null;
 
     private bool IsUse;
+    private bool DragSynergy = false;
     public bool Dragging = false;
     private bool IsshopCard = false;
     private bool bigger = false;
@@ -47,6 +48,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private GameObject synergySlotObj = null;
 
+    private BattleManager battle;
+
 
     private void Awake()
     {
@@ -56,6 +59,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void SetCardData(string id)
     {
+        battle = GameManager.Inst.battle;
         JArray cards = GameManager.Inst.cardJson;
         foreach (JObject card in cards)
         {
@@ -117,40 +121,156 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         Name.text = data.cardName;
         Desc.text = data.cardDesc;
-        if (data.cardDesc.IndexOf("{")>-1)
-        {
-            string convertDesc = "";
-            string[] tempString = data.cardDesc.Split('{', '}');
-            for (int i = 0; i < tempString.Length; i++)
-            {
-                if(i%2==1)
-                {
-                    tempString[i] = data.eff[Convert.ToInt32(tempString[i].Split('_')[0])].Split(' ')[Convert.ToInt32(tempString[i].Split('_')[1])];
-                    tempString[i] = tempString[i].Replace("t", "").Replace("-", "");
-                }
-            }
-            foreach(string temp in tempString)
-            {
-                convertDesc += temp;
-            }
-            Desc.text = convertDesc;
-        }
+        ReplaceDesc(null);
         IsUse = false;
         image.color = new (1.0f, 1.0f, 1.0f);
         cardImage.color = new(1.0f, 1.0f, 1.0f);
         img = null;
     }
+    public void ReplaceDesc(Character _target)
+    {
+        if (data.cardDesc.IndexOf("{") > -1)
+        {
+            string convertDesc = "";
+            string[] tempString = data.cardDesc.Split('{', '}');
+            for (int i = 0; i < tempString.Length; i++)
+            {
+                if (i % 2 == 1)
+                {
+                    if (data.eff[Convert.ToInt32(tempString[i].Split('_')[0])].Split(' ')[3].IndexOf("t") == -1)
+                    {
+                        float resist = 0.0f;
+
+                        string[] effItem = data.eff[Convert.ToInt32(tempString[i].Split('_')[0])].Split(' ');
+
+                        
+                        if (_target != null && effItem[0] == "Target")
+                        {
+                            foreach (var Eff in _target.effResist)
+                            {
+                                if (Eff.effType == (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])))
+                                {
+                                    resist = Eff.per;
+                                    break;
+                                }
+                            }
+                        }
+                        else if(effItem[0] == "Self")
+                        {
+                            foreach (var Eff in battle.Caster.effResist)
+                            {
+                                if (Eff.effType == (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])))
+                                {
+                                    resist = Eff.per;
+                                    break;
+                                }
+                            }
+                        }
+                        Eff _eff = null;
+                        if ((Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Damage || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Heal || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Mana || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Inflict || (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]) == Enums.eff.Receive)
+                        {
+                            if (effItem.Length == 5)
+                            {
+                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                            }
+                            else if (effItem.Length == 4)
+                            {
+                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, battle.Caster);
+                            }
+                        }
+                        else
+                        {
+                            if (effItem.Length == 5)
+                            {
+                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                            }
+                            else if (effItem.Length == 4)
+                            {
+                                if (effItem[3].IndexOf('t') > -1)
+                                {
+                                    _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                                }
+                                else
+                                {
+                                    Debug.Log($"{Convert.ToInt32(effItem[3]) * (1 - resist)} {(int)(Convert.ToInt32(effItem[3]) * (1 - resist))}");
+                                    _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
+                                }
+                            }
+                        }
+                        tempString[i] = CalcValue(_target, _eff).ToString();
+                    }
+                    else
+                    {
+                        tempString[i] = data.eff[Convert.ToInt32(tempString[i].Split('_')[0])].Split(' ')[Convert.ToInt32(tempString[i].Split('_')[1])];
+                    }
+                    tempString[i] = tempString[i].Replace("t", "").Replace("-", "");
+                }
+            }
+            foreach (string temp in tempString)
+            {
+                convertDesc += temp;
+            }
+            Desc.text = convertDesc;
+        }
+    }
+    public int CalcValue(Character target, Eff eff)
+    {
+        int val = 0;
+        if(target == null)
+        {
+            if (eff.eff == Enums.eff.Damage)
+            {
+                val = (int)(eff.val * eff.Caster.giveEff[(int)Enums.effType.Damage].per + eff.Caster.giveEff[(int)Enums.effType.Damage].add);
+            }
+            if (eff.eff == Enums.eff.Heal)
+            {
+                val = (int)(eff.val * eff.Caster.giveEff[(int)Enums.effType.Heal].per + eff.Caster.giveEff[(int)Enums.effType.Heal].add);
+            }
+            if (eff.eff == Enums.eff.Mana || eff.eff == Enums.eff.Inflict || eff.eff == Enums.eff.Receive)
+            {
+                val = eff.val;
+            }
+            if (eff.eff == Enums.eff.Burn || eff.eff == Enums.eff.Poison)
+            {
+                val = eff.accum;
+            }
+        }
+        else
+        {
+            if (eff.eff == Enums.eff.Damage)
+            {
+                val = (int)(eff.val * target.takeEff[(int)Enums.effType.Damage].per * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + eff.Caster.giveEff[(int)Enums.effType.Damage].add;
+            }
+            if (eff.eff == Enums.eff.Heal)
+            {
+                val = (int)(eff.val * target.takeEff[(int)Enums.effType.Heal].per * (eff.Caster.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + eff.Caster.giveEff[(int)Enums.effType.Heal].add;
+            }
+            if (eff.eff == Enums.eff.Mana || eff.eff == Enums.eff.Inflict || eff.eff == Enums.eff.Receive)
+            {
+                val = eff.val;
+            }
+            if (eff.eff == Enums.eff.Burn || eff.eff == Enums.eff.Poison)
+            {
+                val = eff.accum;
+            }
+        }
+        return val;
+    }
     public IEnumerator UseCard()
     {
-        Vector2 pos = Vector2.zero;
-        if(GameManager.Inst.battle.Caster.CompareTag("Player"))
+        Vector2 pos;
+        foreach(CardData card in FindObjectsOfType<CardData>())
+        {
+            card.ReplaceDesc(null);
+        }
+        if(battle.Caster.CompareTag("Player"))
         {
             pos = new Vector2(855f, 160f);
         }
         else
         {
             pos = new Vector2(960f, 540f);
-            GameManager.Inst.battle.UseCardUI.transform.SetAsLastSibling();
+            battle.UseCardUI.transform.SetAsLastSibling();
         }
         while ((rect.anchoredPosition - pos).sqrMagnitude > 0.01f)
         {
@@ -173,7 +293,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (IsUse)
         {
-            yield return new WaitForSeconds(1);
+            if(!DragSynergy)
+                yield return new WaitForSeconds(1);
             image.color = new Color(0.5f, 0.5f, 0.5f);
             cardImage.color = new Color(0.5f, 0.5f, 0.5f);
         }
@@ -189,19 +310,19 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if(eventData.button == PointerEventData.InputButton.Right)
         {
-            Transform cardDetailBox = GameManager.Inst.battle.CardUI.transform.parent.parent.parent.Find("CardDetailBox");
+            Transform cardDetailBox = battle.CardUI.transform.parent.parent.parent.Find("CardDetailBox");
             cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().SetCardData(id);
             cardDetailBox.SetAsLastSibling();
             cardDetailBox.gameObject.SetActive(true);
         }
-        if (IsshopCard || Dragging || data.mana > GameManager.Inst.battle.Mana)
+        if (IsshopCard || Dragging || data.mana > battle.Mana)
             return;
         startPoint = rect.anchoredPosition;
         moveBegin = eventData.position;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse)
+        if (IsshopCard || data.mana > battle.Mana || IsUse)
             return;
         if (Array.IndexOf(data.category, "target") == -1)
         {
@@ -214,12 +335,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnDrag(PointerEventData eventData)
     {
-        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse || IsUse)
+        if (IsshopCard || data.mana > battle.Mana || IsUse || IsUse)
             return;
+
+        ReplaceDesc(null);
         canvasGroup.alpha = 1;
-        GameManager.Inst.battle.cardDragging = true;
+        battle.cardDragging = true;
         sizeChanger = StartCoroutine(BigSize());
-        foreach (Character character in GameManager.Inst.battle.order)
+        foreach (Character character in battle.order)
         {
             character.Targeting.SetActive(false);
             if(!character.isDead)
@@ -258,7 +381,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 }
                 if(Array.IndexOf(data.category, "entire") > -1)
                 {
-                    foreach (Character character in GameManager.Inst.battle.order)
+                    foreach (Character character in battle.order)
                     {
                         if (character.GetComponent<BoxCollider2D>().enabled)
                             character.Targeting.SetActive(true);
@@ -268,12 +391,13 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             
             if(isTargeting)
             {
+                ReplaceDesc(hit.collider.GetComponent<Character>());
                 hit.collider.GetComponent<Enemy>().Targeting.SetActive(true);
-                GameManager.Inst.battle.CalcSubDamage(hit.collider.GetComponent<Character>(), data.eff);
+                battle.CalcSubDamage(hit.collider.GetComponent<Character>(), data.eff);
             }
             else if((hit.collider != null) && (Array.IndexOf(data.category, "target") == -1))
             {
-                GameManager.Inst.battle.CalcSubDamage(null, data.eff);
+                battle.CalcSubDamage(null, data.eff);
             }
             foreach (var result in results)
             {
@@ -304,15 +428,15 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse)
+        if (IsshopCard || data.mana > battle.Mana || IsUse)
             return;
-        GameManager.Inst.battle.cardDragging = false;
+        battle.cardDragging = false;
         Cursor.visible = true;
         Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
         sizeChanger = StartCoroutine(SmallSize());
         if (!IsUse)
         {
-            foreach (Character character in GameManager.Inst.battle.order)
+            foreach (Character character in battle.order)
             {
                 character.Targeting.SetActive(false);
             }
@@ -332,15 +456,16 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     };
                     result.gameObject.GetComponent<SpawnSlotData>().FilledSlot = true;
                     IsUse = true;
-                    GameManager.Inst.battle.Mana -= data.mana;
+                    battle.Mana -= data.mana;
+                    DragSynergy = true;
                 }
             }
             if(isTargeting)
             {
                 IsUse = true;
-                GameManager.Inst.battle.Target = hit.collider.GetComponent<Character>();
-                GameManager.Inst.battle.SetEff(data.eff);
-                GameManager.Inst.battle.Mana -= data.mana;
+                battle.Target = hit.collider.GetComponent<Character>();
+                battle.SetEff(data.eff);
+                battle.Mana -= data.mana;
                 useCard = StartCoroutine(UseCard());
             }
             if(hit.collider != null && Array.IndexOf(data.category, "target") == -1)
@@ -348,8 +473,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 IsUse = true;
                 image.color = new Color(0.5f, 0.5f, 0.5f);
                 cardImage.color = new Color(0.5f, 0.5f, 0.5f);
-                GameManager.Inst.battle.SetEff(data.eff);
-                GameManager.Inst.battle.Mana -= data.mana;
+                battle.SetEff(data.eff);
+                battle.Mana -= data.mana;
                 useCard = StartCoroutine(UseCard());
             }
         }
@@ -372,7 +497,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(!IsUse && !GameManager.Inst.battle.cardDragging)
+        if(!IsUse && !battle.cardDragging)
         {
             transform.parent.parent.SetAsLastSibling();
             if (IsshopCard)

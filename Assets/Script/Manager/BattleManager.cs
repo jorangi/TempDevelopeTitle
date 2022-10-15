@@ -95,6 +95,7 @@ public class BattleManager : MonoBehaviour
     private void Awake()
     {
         Turn = 0;
+        Caster = FindObjectOfType<Player>();
     }
     private void Start()
     {
@@ -237,10 +238,10 @@ public class BattleManager : MonoBehaviour
                         switch(Eff.eff)
                         {
                             case Enums.eff.Burn:
-                                target.HP -= (int)(3 * target.takeEff[(int)Enums.effType.Burn].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Burn].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
+                                target.HP -= Mathf.RoundToInt(3 * target.takeEff[(int)Enums.effType.Burn].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Burn].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
                                 break;
                             case Enums.eff.Poison:
-                                target.HP -= (int)(2 * target.takeEff[(int)Enums.effType.Poison].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Poison].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
+                                target.HP -= Mathf.RoundToInt(2 * target.takeEff[(int)Enums.effType.Poison].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Poison].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
                                 break;
                         }
                     }
@@ -250,10 +251,10 @@ public class BattleManager : MonoBehaviour
                         switch (Eff.eff)
                         {
                             case Enums.eff.Burn:
-                                target.HP -= (int)(3 * target.takeEff[(int)Enums.effType.Burn].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Burn].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
+                                target.HP -= Mathf.RoundToInt(3 * target.takeEff[(int)Enums.effType.Burn].per * Eff.Caster.giveEff[(int)Enums.effType.Burn].per) + target.takeEff[(int)Enums.effType.Burn].add + Eff.Caster.giveEff[(int)Enums.effType.Burn].add;
                                 break;
                             case Enums.eff.Poison:
-                                target.HP -= (int)(2 * target.takeEff[(int)Enums.effType.Poison].per * Eff.Caster.giveEff[(int)Enums.effType.Poison].per) + target.takeEff[(int)Enums.effType.Poison].add + Eff.Caster.giveEff[(int)Enums.effType.Poison].add;
+                                target.HP -= Mathf.RoundToInt(2 * target.takeEff[(int)Enums.effType.Poison].per * Eff.Caster.giveEff[(int)Enums.effType.Poison].per) + target.takeEff[(int)Enums.effType.Poison].add + Eff.Caster.giveEff[(int)Enums.effType.Poison].add;
                                 break;
                         }
                     }
@@ -304,7 +305,7 @@ public class BattleManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Eff.accum += (int)(Convert.ToInt32(effItem[3]) * (1 - resist));
+                                    Eff.accum += Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist));
                                 }
                             }
                             break;
@@ -331,7 +332,7 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Target.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
@@ -343,7 +344,7 @@ public class BattleManager : MonoBehaviour
                             }
                             else
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                 Target.myEff.Add(_eff);
                             }
                         }
@@ -376,7 +377,7 @@ public class BattleManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Eff.accum += (int)(Convert.ToInt32(effItem[3]) * (1 - resist));
+                                    Eff.accum += Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist));
                                 }
                             }
                             break;
@@ -403,7 +404,7 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Caster.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
@@ -415,7 +416,7 @@ public class BattleManager : MonoBehaviour
                             }
                             else
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                 Caster.myEff.Add(_eff);
                             }
                         }
@@ -455,7 +456,7 @@ public class BattleManager : MonoBehaviour
                                         }
                                         else
                                         {
-                                            Eff.accum += (int)(Convert.ToInt32(effItem[3]) * (1 - resist));
+                                            Eff.accum += Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist));
                                         }
                                     }
                                     break;
@@ -482,7 +483,7 @@ public class BattleManager : MonoBehaviour
                             {
                                 if (effItem.Length == 5)
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                     Target.myEff.Add(_eff);
                                 }
                                 else if (effItem.Length == 4)
@@ -494,7 +495,7 @@ public class BattleManager : MonoBehaviour
                                     }
                                     else
                                     {
-                                        Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                        Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                         Target.myEff.Add(_eff);
                                     }
                                 }
@@ -524,7 +525,7 @@ public class BattleManager : MonoBehaviour
                                 haveEff = true;
                                 if (effItem.Length == 5)
                                 {
-                                    Eff.accum += (int)(Convert.ToSingle(effItem[4]) * (1 - resist));
+                                    Eff.accum += Mathf.RoundToInt(Convert.ToSingle(effItem[4]) * (1 - resist));
                                 }
                                 else if (effItem.Length == 4)
                                 {
@@ -534,7 +535,7 @@ public class BattleManager : MonoBehaviour
                                     }
                                     else
                                     {
-                                        Eff.accum += (int)(Convert.ToInt32(effItem[3]) * (1 - resist));
+                                        Eff.accum += Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist));
                                     }
                                 }
                                 break;
@@ -568,7 +569,7 @@ public class BattleManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, (int)(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                     Target.myEff.Add(_eff);
                                 }
                             }
@@ -579,7 +580,7 @@ public class BattleManager : MonoBehaviour
         }
         Immediately();
     }
-    private string FindEffType(string id)
+    public string FindEffType(string id)
     {
         foreach(var eff in GameManager.Inst.effJson)
         {
@@ -599,11 +600,11 @@ public class BattleManager : MonoBehaviour
             var target = _target.GetComponent<Player>();
             if(eff.eff == Enums.eff.Damage)
             {
-                target.HP -= (int)(eff.val * (target.takeEff[(int)Enums.effType.Damage].per) * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add+ eff.Caster.giveEff[(int)Enums.effType.Damage].add;
+                target.HP -= Mathf.RoundToInt(eff.val * (target.takeEff[(int)Enums.effType.Damage].per) * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add+ eff.Caster.giveEff[(int)Enums.effType.Damage].add;
             }
             if(eff.eff == Enums.eff.Heal)
             {
-                target.HP += (int)(eff.val * (target.takeEff[(int)Enums.effType.Heal].per) * (eff.Caster.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + eff.Caster.giveEff[(int)Enums.effType.Heal].add;
+                target.HP += Mathf.RoundToInt(eff.val * (target.takeEff[(int)Enums.effType.Heal].per) * (eff.Caster.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + eff.Caster.giveEff[(int)Enums.effType.Heal].add;
             }
             if (eff.eff == Enums.eff.Mana)
             {
@@ -653,11 +654,11 @@ public class BattleManager : MonoBehaviour
 
             if (eff.eff == Enums.eff.Damage)
             {
-                target.HP -= (int)(eff.val * (target.takeEff[(int)Enums.effType.Damage].per) * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + eff.Caster.giveEff[(int)Enums.effType.Damage].add;
+                target.HP -= Mathf.RoundToInt(eff.val * (target.takeEff[(int)Enums.effType.Damage].per) * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + eff.Caster.giveEff[(int)Enums.effType.Damage].add;
             }
             if (eff.eff == Enums.eff.Heal)
             {
-                target.HP += (int)(eff.val * (target.takeEff[(int)Enums.effType.Heal].per) * (eff.Caster.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + eff.Caster.giveEff[(int)Enums.effType.Heal].add;
+                target.HP += Mathf.RoundToInt(eff.val * (target.takeEff[(int)Enums.effType.Heal].per) * (eff.Caster.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + eff.Caster.giveEff[(int)Enums.effType.Heal].add;
             }
             if (eff.eff == Enums.eff.Inflict)
             {
@@ -709,11 +710,11 @@ public class BattleManager : MonoBehaviour
                 target = GameManager.Inst.player;
                 if (effData[1] == "Heal")
                 {
-                    target.SubHP += (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
+                    target.SubHP += Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
                 }
                 else if(effData[1] == "Damage")
                 {
-                    target.SubHP -= (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
+                    target.SubHP -= Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
 
                 }
             }
@@ -722,11 +723,11 @@ public class BattleManager : MonoBehaviour
                 target = _target;
                 if (effData[1] == "Heal")
                 {
-                    target.SubHP += (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
+                    target.SubHP += Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
                 }
                 else if (effData[1] == "Damage")
                 {
-                    target.SubHP -= (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
+                    target.SubHP -= Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
 
                 }
             }
@@ -739,11 +740,11 @@ public class BattleManager : MonoBehaviour
                         target = character;
                         if (effData[1] == "Heal")
                         {
-                            target.SubHP += (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
+                            target.SubHP += Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Heal].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].per)) + target.takeEff[(int)Enums.effType.Heal].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Heal].add;
                         }
                         else if (effData[1] == "Damage")
                         {
-                            target.SubHP -= (int)(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
+                            target.SubHP -= Mathf.RoundToInt(Convert.ToInt32(effData[3]) * (target.takeEff[(int)Enums.effType.Damage].per) * (GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + GameManager.Inst.player.giveEff[(int)Enums.effType.Damage].add;
 
                         }
                     }
