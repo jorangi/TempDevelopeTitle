@@ -5,7 +5,8 @@
     "hp": 100,
     "cards": [
       "TestTargetAttackCard2",
-      "TestSelfHealCard1"
+      "TestSelfHealCard1",
+      "TestAllBurnCard"
     ],
     "resist": [
       "Burn 0.2"
@@ -17,7 +18,8 @@
     "hp": 150,
     "cards": [
       "TestTargetAttackCard1",
-      "TestSelfHealCard2"
+      "TestSelfHealCard2",
+      "TestAllBurnCard"
     ],
     "resist": [
       "Burn 0.4"
@@ -31,7 +33,8 @@
       "TestTargetAttackCard2",
       "TestSelfHealCard1",
       "TestTargetInflictCard1",
-      "TestTargetReceiveCard1"
+      "TestTargetReceiveCard1",
+      "TestAllBurnCard"
     ],
     "resist": [
       "Burn 0.5",

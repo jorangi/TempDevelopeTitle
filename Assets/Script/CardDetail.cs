@@ -4,27 +4,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Newtonsoft.Json.Linq;
 
 public class CardDetail : MonoBehaviour
 {
     public GameObject DataDescBox;
     public Card data;
     public TextMeshProUGUI Mana, Name, Desc;
-    public Image card, image;
+    public Image cardImage, image;
     public string id;
     public string[] availableCategory;
 
     private void Awake()
     {
-        availableCategory = new string[] { "burn", "poison"};
+        GetComponent<Image>().raycastTarget = false;
     }
-    private void OnEnable()
+    public void SetCardData(string id)
     {
-        DisplayData();
+        availableCategory = new string[] { "burn", "poison" };
+        JArray cards = GameManager.Inst.cardJson;
+        foreach (JObject card in cards)
+        {
+            if (card["id"].ToString() == id)
+            {
+                this.id = id;
+                data = new()
+                {
+                    cardName = card["name"].Value<string>(),
+                    cardDesc = card["desc"].ToString(),
+                    category = card["category"].ToObject<string[]>(),
+                    synergy = card["synergy"].ToObject<string[]>(),
+                    eff = card["eff"].ToObject<string[]>(),
+                    mana = card["mana"].ToObject<int>()
+                };
+
+                image.sprite = Resources.Load<Sprite>($"Images/Card/{id}");
+                cardImage.sprite = Resources.Load<Sprite>($"Images/Card/{data.category[0]}Card");
+                DisplayData();
+                return;
+            }
+        }
     }
     private void DisplayData()
     {
-        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
         Mana.text = data.mana.ToString();
         Name.text = data.cardName;
         Desc.text = data.cardDesc;
@@ -48,18 +70,17 @@ public class CardDetail : MonoBehaviour
         }
 
         Transform Descs = transform.parent.Find("Descs");
-
+        Descs.gameObject.SetActive(false);
         for (int i = Descs.childCount - 1; i >= 0; i--)
         {
             Destroy(Descs.GetChild(i).gameObject);
         }
-
         foreach (string categoryItem in data.category)
         {
             if(Array.IndexOf(availableCategory, categoryItem) > -1)
             {
-                GetComponent<RectTransform>().anchoredPosition = new Vector2(-450, 0);
-                foreach(var Item in GameManager.Inst.effJson)
+                Descs.gameObject.SetActive(true);
+                foreach (var Item in GameManager.Inst.effJson)
                 {
                     if (Item["id"].ToString().ToLower() == categoryItem)
                     {

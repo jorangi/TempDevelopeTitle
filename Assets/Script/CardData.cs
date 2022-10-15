@@ -13,7 +13,7 @@ public class Card
     public string[] category, synergy, eff;
     public int mana, gold;
 }
-public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,IDragHandler, IPointerDownHandler, IEndDragHandler, IPointerClickHandler
+public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IPointerDownHandler, IEndDragHandler, IPointerClickHandler
 {
     private CanvasGroup canvasGroup;
     private RectTransform rect;
@@ -25,10 +25,28 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image cardImage, image;
     public string id;
 
+    private Coroutine sizeChanger = null;
+    private Coroutine useCard = null;
+
     private bool IsUse;
-    private bool Dragging = false;
+    public bool Dragging = false;
     private bool IsshopCard = false;
-    private GameObject tempObj = null;
+    private bool bigger = false;
+    private bool Bigger
+    {
+        get => bigger;
+        set
+        {
+            if(sizeChanger != null && bigger != value)
+            {
+                StopCoroutine(sizeChanger);
+            }
+            bigger = value;
+        }
+    }
+
+    private GameObject synergySlotObj = null;
+
 
     private void Awake()
     {
@@ -61,6 +79,28 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 return;
             }
         }
+    }
+    private IEnumerator BigSize()
+    {
+        Bigger = true;
+        Vector3 size = IsshopCard ? new Vector3(2.85f, 2.85f, 1) : new Vector3(2f, 2f, 1);
+        while((transform.GetChild(0).localScale - size).sqrMagnitude > 0.01f)
+        {
+            transform.GetChild(0).localScale = Vector3.Lerp(transform.GetChild(0).localScale, size, Time.deltaTime * 20);
+            yield return null;
+        }
+        transform.GetChild(0).localScale = size;
+    }
+    private IEnumerator SmallSize()
+    {
+        Bigger = false;
+        Vector3 size = new Vector3(1f, 1f, 1);
+        while ((transform.GetChild(0).localScale - size).sqrMagnitude > 0.01f)
+        {
+            transform.GetChild(0).localScale = Vector3.Lerp(transform.GetChild(0).localScale, size, Time.deltaTime * 20);
+            yield return null;
+        }
+        transform.GetChild(0).localScale = size;
     }
     private void DisplayData()
     {
@@ -100,9 +140,44 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardImage.color = new(1.0f, 1.0f, 1.0f);
         img = null;
     }
-    private IEnumerator ResetPosition()
+    public IEnumerator UseCard()
     {
-        while((rect.anchoredPosition - startPoint).sqrMagnitude > 0.01f)
+        Vector2 pos = Vector2.zero;
+        if(GameManager.Inst.battle.Caster.CompareTag("Player"))
+        {
+            pos = new Vector2(855f, 160f);
+        }
+        else
+        {
+            pos = new Vector2(960f, 540f);
+            GameManager.Inst.battle.UseCardUI.transform.SetAsLastSibling();
+        }
+        while ((rect.anchoredPosition - pos).sqrMagnitude > 0.01f)
+        {
+            rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, pos, Time.deltaTime * 10);
+            yield return null;
+        }
+        rect.anchoredPosition = pos;
+
+        useCard = null;
+    }
+    private IEnumerator DragEndCard()
+    {
+        foreach(CardData card in FindObjectsOfType<CardData>())
+        {
+            card.GetComponent<Image>().raycastTarget = true;
+        }
+        while (useCard!=null)
+        {
+            yield return null;
+        }
+        if (IsUse)
+        {
+            yield return new WaitForSeconds(1);
+            image.color = new Color(0.5f, 0.5f, 0.5f);
+            cardImage.color = new Color(0.5f, 0.5f, 0.5f);
+        }
+        while ((rect.anchoredPosition - startPoint).sqrMagnitude > 0.01f)
         {
             rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, startPoint, Time.deltaTime * 10);
             yield return null;
@@ -115,16 +190,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if(eventData.button == PointerEventData.InputButton.Right)
         {
             Transform cardDetailBox = GameManager.Inst.battle.CardUI.transform.parent.parent.parent.Find("CardDetailBox");
-            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().data = new()
-            {
-                cardDesc = data.cardDesc,
-                cardName = data.cardName,
-                category = data.category,
-                mana = data.mana,
-                eff = data.eff
-            };
-            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().image.sprite = Resources.Load<Sprite>($"Images/Card/{id}");
-            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().card.sprite = Resources.Load<Sprite>($"Images/Card/{data.category[0]}Card");
+            cardDetailBox.transform.Find("Card").GetComponent<CardDetail>().SetCardData(id);
             cardDetailBox.SetAsLastSibling();
             cardDetailBox.gameObject.SetActive(true);
         }
@@ -133,27 +199,81 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         startPoint = rect.anchoredPosition;
         moveBegin = eventData.position;
     }
-    public void OnDrag(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)
     {
-        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana)
+        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse)
             return;
-        GameManager.Inst.battle.cardDragging = true;
-        if (!IsUse)
+        if (Array.IndexOf(data.category, "target") == -1)
         {
             Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
+        }
+        else
+        {
+            Cursor.SetCursor(GameManager.Inst.AttackCursor, Vector2.zero, CursorMode.ForceSoftware);
+        }
+    }
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse || IsUse)
+            return;
+        canvasGroup.alpha = 1;
+        GameManager.Inst.battle.cardDragging = true;
+        sizeChanger = StartCoroutine(BigSize());
+        foreach (Character character in GameManager.Inst.battle.order)
+        {
+            character.Targeting.SetActive(false);
+            if(!character.isDead)
+            {
+                character.SubHP = character.HP;
+            }
+        }
+        if (!IsUse)
+        {
             Dragging = true;
             bool onSpawnable = false;
-            RaycastHit2D hit = Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, transform.forward, 100.0f, LayerMask.GetMask("Field"));
-            bool isTargetting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target")>-1);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(eventData.position), transform.forward, 100.0f, LayerMask.GetMask("Field"));
+            bool isTargeting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target")>-1);
             List<RaycastResult> results = new();
             EventSystem.current.RaycastAll(eventData, results);
-            moveOffset = (eventData.position  - moveBegin) * new Vector2(1920.0f / Screen.width, 1080.0f / Screen.height);
-            rect.anchoredPosition = startPoint + moveOffset;
-            canvasGroup.alpha = 1;
-            if (isTargetting)
+
+            if (Array.IndexOf(data.category, "target") == -1)
             {
-                canvasGroup.alpha = 0;
-                Cursor.SetCursor(GameManager.Inst.AttackCursor, Vector2.zero, CursorMode.ForceSoftware);
+                moveOffset = (eventData.position - moveBegin) * new Vector2(1920.0f / Screen.width, 1080.0f / Screen.height);
+                rect.anchoredPosition = startPoint + moveOffset;
+            }
+            if (hit.collider != null && Array.IndexOf(data.category, "self") > - 1)
+            {
+                GameManager.Inst.player.Targeting.SetActive(true);
+            }
+            if (hit.collider != null && (Array.IndexOf(data.category, "enemies") > - 1 || Array.IndexOf(data.category, "entire") > - 1))
+            {
+                if(Array.IndexOf(data.category, "enemies") > -1)
+                {
+                    Enemy[] enemies = FindObjectsOfType<Enemy>();
+                    foreach (Enemy enemy in enemies)
+                    {
+                        if (enemy.GetComponent<BoxCollider2D>().enabled)
+                            enemy.Targeting.SetActive(true);
+                    }
+                }
+                if(Array.IndexOf(data.category, "entire") > -1)
+                {
+                    foreach (Character character in GameManager.Inst.battle.order)
+                    {
+                        if (character.GetComponent<BoxCollider2D>().enabled)
+                            character.Targeting.SetActive(true);
+                    }
+                }
+            }
+            
+            if(isTargeting)
+            {
+                hit.collider.GetComponent<Enemy>().Targeting.SetActive(true);
+                GameManager.Inst.battle.CalcSubDamage(hit.collider.GetComponent<Character>(), data.eff);
+            }
+            else if((hit.collider != null) && (Array.IndexOf(data.category, "target") == -1))
+            {
+                GameManager.Inst.battle.CalcSubDamage(null, data.eff);
             }
             foreach (var result in results)
             {
@@ -169,12 +289,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     img = result.gameObject.transform.Find("illust").GetComponent<Image>();
                     img.gameObject.SetActive(true);
                     img.sprite = image.sprite;
-                    tempObj = result.gameObject;
+                    synergySlotObj = result.gameObject;
                     img.color = new Color(0.5f, 0.5f, 0.5f);
                     canvasGroup.alpha = 0;
                 }
             }
-            if (!onSpawnable && img != null && !tempObj.GetComponent<SpawnSlotData>().FilledSlot)
+            if (!onSpawnable && img != null && !synergySlotObj.GetComponent<SpawnSlotData>().FilledSlot)
             {
                 img.gameObject.SetActive(false);
                 img.sprite = null;
@@ -184,17 +304,23 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana)
+        if (IsshopCard || data.mana > GameManager.Inst.battle.Mana || IsUse)
             return;
         GameManager.Inst.battle.cardDragging = false;
+        Cursor.visible = true;
+        Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
+        sizeChanger = StartCoroutine(SmallSize());
         if (!IsUse)
         {
+            foreach (Character character in GameManager.Inst.battle.order)
+            {
+                character.Targeting.SetActive(false);
+            }
             List<RaycastResult> results = new();
             EventSystem.current.RaycastAll(eventData, results);
             canvasGroup.alpha = 1;
-            RaycastHit2D hit = Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, transform.forward, 100.0f, LayerMask.GetMask("Field"));
-            bool isTargetting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target") > -1);
-            StartCoroutine(ResetPosition());
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(eventData.position), transform.forward, 100.0f, LayerMask.GetMask("Field"));
+            bool isTargeting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target") > -1);
             foreach (var result in results)
             {
                 if (result.gameObject.name == "SpawnSlot" && result.gameObject.GetComponent<SpawnSlotData>().data == null)
@@ -205,22 +331,17 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                         synergy = data.synergy,
                     };
                     result.gameObject.GetComponent<SpawnSlotData>().FilledSlot = true;
-                    image.color = new Color(0.5f, 0.5f, 0.5f);
-                    cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                     IsUse = true;
                     GameManager.Inst.battle.Mana -= data.mana;
                 }
             }
-            if(isTargetting)
+            if(isTargeting)
             {
                 IsUse = true;
-                image.color = new Color(0.5f, 0.5f, 0.5f);
-                cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 GameManager.Inst.battle.Target = hit.collider.GetComponent<Character>();
                 GameManager.Inst.battle.SetEff(data.eff);
-                Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
                 GameManager.Inst.battle.Mana -= data.mana;
-                return;
+                useCard = StartCoroutine(UseCard());
             }
             if(hit.collider != null && Array.IndexOf(data.category, "target") == -1)
             {
@@ -228,11 +349,11 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 image.color = new Color(0.5f, 0.5f, 0.5f);
                 cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 GameManager.Inst.battle.SetEff(data.eff);
-                Cursor.SetCursor(GameManager.Inst.CursorImg, Vector2.zero, CursorMode.ForceSoftware);
                 GameManager.Inst.battle.Mana -= data.mana;
-                return;
+                useCard = StartCoroutine(UseCard());
             }
         }
+        StartCoroutine(DragEndCard());
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -245,41 +366,44 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 image.color = new Color(0.5f, 0.5f, 0.5f);
                 cardImage.color = new Color(0.5f, 0.5f, 0.5f);
                 IsUse = true;
+                sizeChanger = StartCoroutine(SmallSize());
             }
         }
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(IsshopCard)
+        if(!IsUse && !GameManager.Inst.battle.cardDragging)
         {
             transform.parent.parent.SetAsLastSibling();
-            transform.GetChild(0).localScale = new Vector3(2.85f, 2.85f, 1);
-            if(rect.anchoredPosition.x == 855)
+            if (IsshopCard)
             {
-                transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(-80, 0);
+                transform.parent.parent.SetAsLastSibling();
+                if (rect.anchoredPosition.x == 855)
+                {
+                    transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(-80, 0);
+                }
+                if (rect.anchoredPosition.y == -260)
+                {
+                    transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 150);
+                }
             }
-            if(rect.anchoredPosition.y == -260)
-            {
-                transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 150);
-            }
+            sizeChanger = StartCoroutine(BigSize());
+            transform.SetAsLastSibling();
         }
-        else
-        {
-            transform.parent.parent.SetAsLastSibling();
-            transform.GetChild(0).localScale = new Vector3(2f, 2f, 1);
-        }
-        transform.SetAsLastSibling();
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        transform.GetChild(0).localScale = new Vector3(1, 1, 1);
-        if (rect.anchoredPosition.x == 855)
+        if (!IsUse)
         {
-            transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        }
-        if (rect.anchoredPosition.y == -260)
-        {
-            transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            sizeChanger = StartCoroutine(SmallSize());
+            if (rect.anchoredPosition.x == 855)
+            {
+                transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            }
+            if (rect.anchoredPosition.y == -260)
+            {
+                transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            }
         }
     }
 }

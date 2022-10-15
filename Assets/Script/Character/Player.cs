@@ -6,23 +6,6 @@ using UnityEngine.UI;
 
 public class Player : Character
 {
-    public int mhp;
-    public int HP
-    {
-        get => hp;
-        set
-        {
-            hp = Mathf.Clamp(value, 0, mhp);
-
-            GameManager.Inst.battle.HPText.text = $"{hp} / {mhp}";
-            GameManager.Inst.battle.HPText.transform.parent.Find("HPBar").GetComponent<Image>().fillAmount = (float)hp / mhp;
-
-            if (hp == 0)
-            {
-                //Debug.Log("Á×À½");
-            }
-        }
-    }
     public int gold = 0;
     public int Gold
     {
@@ -33,8 +16,9 @@ public class Player : Character
             GameManager.Inst.battle.GoldText.text = $"{value} G";
         }
     }
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         mhp = 100;
         HP = mhp;
         Gold = 100;

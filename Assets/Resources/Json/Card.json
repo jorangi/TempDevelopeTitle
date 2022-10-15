@@ -270,7 +270,7 @@
     "mana": 0,
     "gold": 1,
     "desc": "대상이 받는 피해량이 {0_3}턴간 {0_4}% 증가한다.\n자신이 받는 피해량이 {1_3}턴간 {1_4}% 감소한다.\n적 전체가 받는 피해량이 {2_3}턴간 {2_4}% 증가한다.",
-    "category": [ "test", "basic", "inflict", "target", "self", "enemies" ],
+    "category": [ "test", "basic", "inflict", "target", "entire" ],
     "synergy": [ "test" ],
     "eff": [
       "Target Receive Immediately 2t 10",
@@ -284,7 +284,7 @@
     "mana": 0,
     "gold": 1,
     "desc": "대상에게 {0_3}턴간 화상을 부여한다.\n자신에게 화상 {1_3}을 부여한다.\n적 전체에게 화상 {2_3}을 부여한다.",
-    "category": [ "test", "basic", "burn", "target", "self", "enemies" ],
+    "category": [ "test", "basic", "burn", "target", "entire" ],
     "synergy": [ "test" ],
     "eff": [
       "Target Burn Immediately 3t",
@@ -298,7 +298,7 @@
     "mana": 0,
     "gold": 1,
     "desc": "대상에게 {0_3}턴간 독을 부여한다.\n자신에게 독 {1_3}을 부여한다.\n적 전체에게 독 {2_3}을 부여한다.",
-    "category": [ "test", "basic", "poison", "target", "self", "enemies" ],
+    "category": [ "test", "basic", "poison", "target", "entire" ],
     "synergy": [ "test" ],
     "eff": [
       "Target Poison Immediately 3t",
