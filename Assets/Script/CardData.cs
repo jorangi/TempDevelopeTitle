@@ -129,10 +129,33 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void ReplaceDesc(Character _target)
     {
+        if(data.cardDesc.IndexOf('[') > -1)
+        {
+            string convertDesc = "";
+            string[] tempString = data.cardDesc.Split('[', ']');
+            for(int i = 0; i < tempString.Length; i++)
+            {
+                if(i%2 == 1)
+                {
+                    foreach(var eff in GameManager.Inst.effJson)
+                    {
+                        if(eff["id"].ToString().ToLower() == tempString[i])
+                        {
+                            tempString[i] = eff["name"].ToString().ToUpper();
+                        }
+                    }
+                }
+            }
+            foreach (string temp in tempString)
+            {
+                convertDesc += temp;
+            }
+            Desc.text = convertDesc;
+        }
         if (data.cardDesc.IndexOf("{") > -1)
         {
             string convertDesc = "";
-            string[] tempString = data.cardDesc.Split('{', '}');
+            string[] tempString = Desc.text.Split('{', '}');
             for (int i = 0; i < tempString.Length; i++)
             {
                 if (i % 2 == 1)
@@ -192,7 +215,6 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                                 }
                                 else
                                 {
-                                    Debug.Log($"{Convert.ToInt32(effItem[3]) * (1 - resist)} {(int)(Convert.ToInt32(effItem[3]) * (1 - resist))}");
                                     _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
                                 }
                             }
@@ -259,13 +281,15 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public IEnumerator UseCard()
     {
         Vector2 pos;
-        foreach(CardData card in FindObjectsOfType<CardData>())
+        GameManager.Inst.battle.lastCard = data;
+        foreach (CardData card in FindObjectsOfType<CardData>())
         {
             card.ReplaceDesc(null);
         }
         if(battle.Caster.CompareTag("Player"))
         {
             pos = new Vector2(855f, 160f);
+            GameManager.Inst.battle.recentCard = data;
         }
         else
         {
@@ -401,7 +425,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
             foreach (var result in results)
             {
-                if (result.gameObject.name == "SpawnSlot" && result.gameObject.GetComponent<SpawnSlotData>().data == null)
+                if (result.gameObject.name == "SynergySlot" && result.gameObject.GetComponent<SynergySlotData>().data == null)
                 {
                     onSpawnable = true;
                     if (img != null)
@@ -418,7 +442,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     canvasGroup.alpha = 0;
                 }
             }
-            if (!onSpawnable && img != null && !synergySlotObj.GetComponent<SpawnSlotData>().FilledSlot)
+            if (!onSpawnable && img != null && !synergySlotObj.GetComponent<SynergySlotData>().FilledSlot)
             {
                 img.gameObject.SetActive(false);
                 img.sprite = null;
@@ -447,14 +471,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             bool isTargeting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target") > -1);
             foreach (var result in results)
             {
-                if (result.gameObject.name == "SpawnSlot" && result.gameObject.GetComponent<SpawnSlotData>().data == null)
+                if (result.gameObject.name == "SynergySlot" && result.gameObject.GetComponent<SynergySlotData>().data == null)
                 {
                     img.color = new(1, 1, 1);
-                    result.gameObject.GetComponent<SpawnSlotData>().data = new()
+                    result.gameObject.GetComponent<SynergySlotData>().data = new()
                     {
                         synergy = data.synergy,
                     };
-                    result.gameObject.GetComponent<SpawnSlotData>().FilledSlot = true;
+                    result.gameObject.GetComponent<SynergySlotData>().FilledSlot = true;
                     IsUse = true;
                     battle.Mana -= data.mana;
                     DragSynergy = true;

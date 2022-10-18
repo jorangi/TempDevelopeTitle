@@ -586,10 +586,12 @@ MonoBehaviour:
   order: []
   Caster: {fileID: 0}
   Target: {fileID: 0}
-  Turn: 0
   ManaText: {fileID: 38708114}
   GoldText: {fileID: 1159176655}
+  DrawCardText: {fileID: 0}
+  AbandonedCardText: {fileID: 0}
   cardDragging: 0
+  Turn: 0
 --- !u!4 &92539036
 Transform:
   m_ObjectHideFlags: 0
@@ -1476,7 +1478,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 756450937396645275, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_Name
-      value: SpawnSlot
+      value: SynergySlot
       objectReference: {fileID: 0}
     - target: {fileID: 756450938279482745, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_text
@@ -2505,7 +2507,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 756450937396645275, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_Name
-      value: SpawnSlot
+      value: SynergySlot
       objectReference: {fileID: 0}
     - target: {fileID: 756450938279482745, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_text
@@ -5215,7 +5217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 756450937396645275, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_Name
-      value: SpawnSlot
+      value: SynergySlot
       objectReference: {fileID: 0}
     - target: {fileID: 756450938279482745, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_text
@@ -6097,7 +6099,7 @@ GameObject:
   - component: {fileID: 1674490221}
   - component: {fileID: 1674490222}
   m_Layer: 5
-  m_Name: SpawnSlots
+  m_Name: SynergySlots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7905,7 +7907,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 756450937396645275, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_Name
-      value: SpawnSlot
+      value: SynergySlot
       objectReference: {fileID: 0}
     - target: {fileID: 756450938279482745, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_text
@@ -8113,7 +8115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 756450937396645275, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_Name
-      value: SpawnSlot
+      value: SynergySlot
       objectReference: {fileID: 0}
     - target: {fileID: 756450938279482745, guid: 50eb4e7b4a64a674eb005462ec32df7b, type: 3}
       propertyPath: m_text

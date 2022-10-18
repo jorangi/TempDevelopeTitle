@@ -13,8 +13,8 @@
   },
   {
     "id": "Mana",
-    "name": "마나회복",
-    "desc": "마나를 회복합니다.",
+    "name": "마나",
+    "desc": "카드를 사용할 때 사용됩니다.",
     "effType": "Independant"
   },
   {

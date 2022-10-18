@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SpawnSlotData : MonoBehaviour, IPointerClickHandler
+public class SynergySlotData : MonoBehaviour, IPointerClickHandler
 {
     public Image illust;
     public Card data;

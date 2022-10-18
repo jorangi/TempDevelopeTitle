@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Specialized;
 
 public class BattleManager : MonoBehaviour
 {
@@ -15,8 +17,22 @@ public class BattleManager : MonoBehaviour
     public GameObject UseCardUI;
     public GameObject CardPrefab;
 
+    public List<Character> order;
+
+    public Character Caster, Target;
+
+    public Card lastCard, recentCard;
+
+    public TextMeshProUGUI ManaText, GoldText;
+
+    public Coroutine PlayingEffect = null;
+
+    public bool cardDragging = false;
+
     private int index = 0;
     private int mana = 0;
+    private int maxMana = 0;
+    public int Turn = 0;
 
     public int Index
     {
@@ -73,12 +89,6 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
-    public List<Character> order;
-    public Character Caster, Target;
-    public int Turn = 0;
-
-    public TextMeshProUGUI ManaText, GoldText;
-    private int maxMana = 0;
     public int Mana
     {
         get => mana;
@@ -88,9 +98,6 @@ public class BattleManager : MonoBehaviour
             ManaText.text = $"{value}/{maxMana}";
         }
     }
-    public bool cardDragging = false;
-
-    public Coroutine PlayingEffect = null;
 
     private void Awake()
     {
@@ -103,6 +110,7 @@ public class BattleManager : MonoBehaviour
         Index = 0;
         Mana = maxMana;
         GameManager.Inst.player.HP = GameManager.Inst.player.mhp;
+
         EnemySpawn("slime");
         EnemySpawn("cerberus");
         EnemySpawn("wolf");

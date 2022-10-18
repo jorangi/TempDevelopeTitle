@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 756450937396645274}
   - component: {fileID: 756450937396645276}
   - component: {fileID: 756450937396645277}
-  - component: {fileID: 5735276014619507797}
   - component: {fileID: 1606346536478176914}
+  - component: {fileID: 2644563794030957687}
   m_Layer: 5
-  m_Name: SpawnSlot
+  m_Name: SynergySlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,19 +80,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5735276014619507797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 756450937396645275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be57736962b623b4dae0ddd9d0c7c0ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  illust: {fileID: 8099172145032361773}
 --- !u!114 &1606346536478176914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +124,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2644563794030957687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756450937396645275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be57736962b623b4dae0ddd9d0c7c0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  illust: {fileID: 8099172145032361773}
+  FilledSlot: 0
 --- !u!1 &756450938279482727
 GameObject:
   m_ObjectHideFlags: 0

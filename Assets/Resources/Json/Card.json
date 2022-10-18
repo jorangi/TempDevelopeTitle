@@ -186,7 +186,7 @@
     "name": "테스트용 마나 회복 카드",
     "mana": 0,
     "gold": 1,
-    "desc": "마나를 {0_3}만큼 획득한다.",
+    "desc": "[mana]를 {0_3}만큼 획득한다.",
     "category": [ "test", "basic", "mana", "self" ],
     "synergy": [ "test" ],
     "eff": [ "Self Mana Immediately 3" ]
@@ -283,7 +283,7 @@
     "name": "테스트용 대상 화상 카드",
     "mana": 0,
     "gold": 1,
-    "desc": "대상에게 화상 {0_3}을 부여한다.",
+    "desc": "대상에게 [burn] {0_3}을 부여한다.",
     "category": [ "test", "basic", "burn", "target"],
     "synergy": [ "test" ],
     "eff": [
@@ -295,7 +295,7 @@
     "name": "테스트용 모든 대상 타입 화상 카드",
     "mana": 0,
     "gold": 1,
-    "desc": "대상에게 {0_3}턴간 화상을 부여한다.\n자신에게 화상 {1_3}을 부여한다.\n적 전체에게 화상 {2_3}을 부여한다.",
+    "desc": "대상에게 {0_3}턴간 [burn]을 부여한다.\n자신에게 [burn] {1_3}을 부여한다.\n적 전체에게 [burn] {2_3}을 부여한다.",
     "category": [ "test", "basic", "burn", "target", "entire" ],
     "synergy": [ "test" ],
     "eff": [
@@ -309,7 +309,7 @@
     "name": "테스트용 모든 대상 타입 독 카드",
     "mana": 0,
     "gold": 1,
-    "desc": "대상에게 {0_3}턴간 독을 부여한다.\n자신에게 독 {1_3}을 부여한다.\n적 전체에게 독 {2_3}을 부여한다.",
+    "desc": "대상에게 {0_3}턴간 [poison]을 부여한다.\n자신에게 [poison] {1_3}을 부여한다.\n적 전체에게 [poison] {2_3}을 부여한다.",
     "category": [ "test", "basic", "poison", "target", "entire" ],
     "synergy": [ "test" ],
     "eff": [
