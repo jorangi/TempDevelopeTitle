@@ -129,7 +129,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void ReplaceDesc(Character _target)
     {
-        if(data.cardDesc.IndexOf('[') > -1)
+        string tempDesc = data.cardDesc;
+        if (data.cardDesc.IndexOf('[') > -1)
         {
             string convertDesc = "";
             string[] tempString = data.cardDesc.Split('[', ']');
@@ -150,12 +151,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 convertDesc += temp;
             }
-            Desc.text = convertDesc;
+            tempDesc = convertDesc;
         }
         if (data.cardDesc.IndexOf("{") > -1)
         {
             string convertDesc = "";
-            string[] tempString = Desc.text.Split('{', '}');
+            string[] tempString = tempDesc.Split('{', '}');
             for (int i = 0; i < tempString.Length; i++)
             {
                 if (i % 2 == 1)
@@ -195,10 +196,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                             if (effItem.Length == 5)
                             {
                                 _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                                Debug.Log(0);
                             }
                             else if (effItem.Length == 4)
                             {
                                 _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, battle.Caster);
+                                Debug.Log(0);
                             }
                         }
                         else
@@ -206,16 +209,19 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                             if (effItem.Length == 5)
                             {
                                 _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                                Debug.Log(0);
                             }
                             else if (effItem.Length == 4)
                             {
                                 if (effItem[3].IndexOf('t') > -1)
                                 {
                                     _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
+                                    Debug.Log(0);
                                 }
                                 else
                                 {
                                     _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
+                                    Debug.Log(0);
                                 }
                             }
                         }
@@ -232,8 +238,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 convertDesc += temp;
             }
-            Desc.text = convertDesc;
+            tempDesc = convertDesc;
         }
+        Desc.text = tempDesc;
     }
     public int CalcValue(Character target, Eff eff)
     {
@@ -262,6 +269,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             if (eff.eff == Enums.eff.Damage)
             {
                 val = (int)(eff.val * target.takeEff[(int)Enums.effType.Damage].per * (eff.Caster.giveEff[(int)Enums.effType.Damage].per)) + target.takeEff[(int)Enums.effType.Damage].add + eff.Caster.giveEff[(int)Enums.effType.Damage].add;
+                Debug.Log(val);
             }
             if (eff.eff == Enums.eff.Heal)
             {
@@ -514,6 +522,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 GameManager.Inst.player.AddCard(id);
                 image.color = new Color(0.5f, 0.5f, 0.5f);
                 cardImage.color = new Color(0.5f, 0.5f, 0.5f);
+                transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
                 IsUse = true;
                 sizeChanger = StartCoroutine(SmallSize());
             }

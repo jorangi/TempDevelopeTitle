@@ -176,6 +176,8 @@ public class Character : MonoBehaviour
     }
     private IEnumerator HPBarLerp()
     {
+        if (mhp == 0)
+            yield break;
         while(Mathf.Abs(HPBar.localScale.x - (float)hp / mhp) > 0.01f)
         {
             HPBar.localScale = new Vector3(Mathf.Lerp(HPBar.localScale.x, (float)hp / mhp, Time.deltaTime * 7), 1, 1);

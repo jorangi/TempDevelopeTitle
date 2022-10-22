@@ -103,7 +103,7 @@ public class CardDetail : MonoBehaviour
             }
             Desc.text = convertDesc;
         }
-        if (data.cardDesc.IndexOf("{") > -1)
+        if (Desc.text.IndexOf("{") > -1)
         {
             string convertDesc = "";
             string[] tempString = Desc.text.Split('{', '}');
@@ -166,7 +166,6 @@ public class CardDetail : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Debug.Log($"{Convert.ToInt32(effItem[3]) * (1 - resist)} {(int)(Convert.ToInt32(effItem[3]) * (1 - resist))}");
                                     _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
                                 }
                             }
