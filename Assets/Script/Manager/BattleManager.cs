@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour
     public GameObject EnemyInfo;
     public GameObject UseCardUI;
     public GameObject CardPrefab;
+    public Transform Gifts;
 
     public List<Character> order;
 
@@ -26,6 +27,10 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI ManaText, GoldText;
 
     public Coroutine PlayingEffect = null;
+
+
+    string[] synergyList;
+    public List<string> synergies;
 
     public bool cardDragging = false;
 
@@ -101,6 +106,8 @@ public class BattleManager : MonoBehaviour
 
     private void Awake()
     {
+        synergyList = new string[] { "test" };
+        synergies = new();
         Turn = 0;
         Caster = FindObjectOfType<Player>();
     }
@@ -280,7 +287,7 @@ public class BattleManager : MonoBehaviour
         RemoveEff();
         Index++;
     }
-    public void SetEff(string[] effs)
+    public void SetEff(string id, string[] effs)
     {
         foreach(var eff in effs)
         {
@@ -327,12 +334,12 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Target.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
                             Target.myEff.Add(_eff);
                         }
                     }
@@ -340,19 +347,19 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Target.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
                         {
                             if (effItem[3].IndexOf('t') > -1)
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                 Target.myEff.Add(_eff);
                             }
                             else
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                 Target.myEff.Add(_eff);
                             }
                         }
@@ -399,12 +406,12 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Caster.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
                             Caster.myEff.Add(_eff);
                         }
                     }
@@ -412,19 +419,19 @@ public class BattleManager : MonoBehaviour
                     {
                         if (effItem.Length == 5)
                         {
-                            Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                            Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                             Caster.myEff.Add(_eff);
                         }
                         else if (effItem.Length == 4)
                         {
                             if (effItem[3].IndexOf('t') > -1)
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                 Caster.myEff.Add(_eff);
                             }
                             else
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                 Caster.myEff.Add(_eff);
                             }
                         }
@@ -478,12 +485,12 @@ public class BattleManager : MonoBehaviour
                             {
                                 if (effItem.Length == 5)
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                    Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                     Target.myEff.Add(_eff);
                                 }
                                 else if (effItem.Length == 4)
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
+                                    Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
                                     Target.myEff.Add(_eff);
                                 }
                             }
@@ -491,19 +498,19 @@ public class BattleManager : MonoBehaviour
                             {
                                 if (effItem.Length == 5)
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                    Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                     Target.myEff.Add(_eff);
                                 }
                                 else if (effItem.Length == 4)
                                 {
                                     if (effItem[3].IndexOf('t') > -1)
                                     {
-                                        Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                        Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                         Target.myEff.Add(_eff);
                                     }
                                     else
                                     {
-                                        Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                        Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                         Target.myEff.Add(_eff);
                                     }
                                 }
@@ -557,12 +564,12 @@ public class BattleManager : MonoBehaviour
                         {
                             if (effItem.Length == 5)
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                 Target.myEff.Add(_eff);
                             }
                             else if (effItem.Length == 4)
                             {
-                                Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
+                                Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, Caster);
                                 Target.myEff.Add(_eff);
                             }
                         }
@@ -572,12 +579,12 @@ public class BattleManager : MonoBehaviour
                             {
                                 if (effItem[3].IndexOf('t') > -1)
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
+                                    Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), Caster);
                                     Target.myEff.Add(_eff);
                                 }
                                 else
                                 {
-                                    Eff _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
+                                    Eff _eff = new(id, (Enums.effType)Enum.Parse(typeof(Enums.effType), FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, Caster);
                                     Target.myEff.Add(_eff);
                                 }
                             }
@@ -833,6 +840,29 @@ public class BattleManager : MonoBehaviour
         {
             EnemyInfo.transform.Find("Card").gameObject.SetActive(false);
             EnemyInfo.transform.Find("Descs").gameObject.SetActive(false);
+        }
+    }
+    public void OnSynergy()
+    {
+        for (int i = 0; i < synergyList.Length; i++)
+        {
+            int num = (from synergy in synergies
+                      where (synergy == synergyList[i])
+                      select synergy).Count();
+
+            if (synergyList[i] == "test")
+            {
+                switch(num)
+                {
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+
+                }
+            }
         }
     }
 }

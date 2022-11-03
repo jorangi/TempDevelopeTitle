@@ -19,6 +19,7 @@ public class EffType
 [System.Serializable]
 public class Eff
 {
+    public string id;
     public Enums.effType effType;
     public Enums.eff eff;
     public Enums.moment moment;
@@ -26,8 +27,9 @@ public class Eff
     public bool run = false;
     public Character Caster;
 
-    public Eff(Enums.effType effType, Enums.eff eff, int val, int accum, int turn, Character Caster, Enums.moment moment = Enums.moment.Immediately)
+    public Eff(string id, Enums.effType effType, Enums.eff eff, int val, int accum, int turn, Character Caster, Enums.moment moment = Enums.moment.Immediately)
     {
+        this.id = id;
         this.Caster = Caster;
         this.effType = effType;
         this.eff = eff;

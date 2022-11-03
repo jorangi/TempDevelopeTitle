@@ -14,6 +14,10 @@ public class SynergySlotData : MonoBehaviour, IPointerClickHandler
     {
         if(eventData.button == PointerEventData.InputButton.Right)
         {
+            foreach(string synergy in data.synergy)
+            {
+                GameManager.Inst.battle.synergies.Remove(synergy);
+            }
             data = null;
             illust.sprite = null;
             illust.gameObject.SetActive(false);

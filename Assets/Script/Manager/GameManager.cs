@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     }
     public BattleManager battle;
     public Player player;
+    public Transform giftUI;
+    public GameObject giftPrefab;
+    public List<GiftBase> gifts;
     public TextAsset CardJson, EffJson, CharacterJson;
     public JArray cardJson, effJson, characterJson;
     public Texture2D CursorImg, AttackCursor;
@@ -41,5 +44,11 @@ public class GameManager : MonoBehaviour
         Cursor.SetCursor(CursorImg, Vector2.zero, CursorMode.ForceSoftware);
         player = FindObjectOfType<Player>();
         battle = FindObjectOfType<BattleManager>();
+    }
+    public void AcquireGift(string gift)
+    {
+        GameObject obj = Instantiate(giftPrefab, giftUI);
+        obj.name = gift;
+        UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(obj, "Assets/Script/Manager/GameManager.cs (52,9)", "asd");
     }
 }

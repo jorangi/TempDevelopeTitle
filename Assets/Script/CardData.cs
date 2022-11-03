@@ -1,15 +1,16 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Newtonsoft.Json.Linq;
-using System;
 using UnityEngine.EventSystems;
 
 public class Card
 {
-    public string cardName, cardDesc;
+    public string id, cardName, cardDesc;
     public string[] category, synergy, eff;
     public int mana, gold;
 }
@@ -68,6 +69,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 this.id = id;
                 data = new()
                 {
+                    id = this.id,
                     cardName = card["name"].Value<string>(),
                     cardDesc = card["desc"].ToString(),
                     category = card["category"].ToObject<string[]>(),
@@ -195,33 +197,28 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                         {
                             if (effItem.Length == 5)
                             {
-                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
-                                Debug.Log(0);
+                                _eff = new(data.id, (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[4]), 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
                             }
                             else if (effItem.Length == 4)
                             {
-                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, battle.Caster);
-                                Debug.Log(0);
+                                _eff = new(data.id, (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), Convert.ToInt32(effItem[3]), 0, 0, battle.Caster);
                             }
                         }
                         else
                         {
                             if (effItem.Length == 5)
                             {
-                                _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
-                                Debug.Log(0);
+                                _eff = new(data.id, (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[4]) * (1 - resist)), Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
                             }
                             else if (effItem.Length == 4)
                             {
                                 if (effItem[3].IndexOf('t') > -1)
                                 {
-                                    _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
-                                    Debug.Log(0);
+                                    _eff = new(data.id, (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, 0, Convert.ToInt32(effItem[3].Replace("t", "")), battle.Caster);
                                 }
                                 else
                                 {
-                                    _eff = new((Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
-                                    Debug.Log(0);
+                                    _eff = new(data.id, (Enums.effType)Enum.Parse(typeof(Enums.effType), battle.FindEffType(effItem[1])), (Enums.eff)Enum.Parse(typeof(Enums.eff), effItem[1]), 0, Mathf.RoundToInt(Convert.ToInt32(effItem[3]) * (1 - resist)), 0, battle.Caster);
                                 }
                             }
                         }
@@ -433,7 +430,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
             foreach (var result in results)
             {
-                if (result.gameObject.name == "SynergySlot" && result.gameObject.GetComponent<SynergySlotData>().data == null)
+                if (result.gameObject.name.IndexOf("SynergySlot") > -1 && result.gameObject.GetComponent<SynergySlotData>().data == null)
                 {
                     onSpawnable = true;
                     if (img != null)
@@ -479,24 +476,26 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             bool isTargeting = (hit.collider != null) && hit.collider.gameObject.CompareTag("Enemy") && (Array.IndexOf(data.category, "target") > -1);
             foreach (var result in results)
             {
-                if (result.gameObject.name == "SynergySlot" && result.gameObject.GetComponent<SynergySlotData>().data == null)
+                if (result.gameObject.name.IndexOf("SynergySlot") > -1 && result.gameObject.GetComponent<SynergySlotData>().data == null)
                 {
                     img.color = new(1, 1, 1);
                     result.gameObject.GetComponent<SynergySlotData>().data = new()
                     {
                         synergy = data.synergy,
                     };
+                    battle.synergies.AddRange(data.synergy);
                     result.gameObject.GetComponent<SynergySlotData>().FilledSlot = true;
                     IsUse = true;
                     battle.Mana -= data.mana;
                     DragSynergy = true;
+                    battle.OnSynergy();
                 }
             }
             if(isTargeting)
             {
                 IsUse = true;
                 battle.Target = hit.collider.GetComponent<Character>();
-                battle.SetEff(data.eff);
+                battle.SetEff(data.id, data.eff);
                 battle.Mana -= data.mana;
                 useCard = StartCoroutine(UseCard());
             }
@@ -505,7 +504,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 IsUse = true;
                 image.color = new Color(0.5f, 0.5f, 0.5f);
                 cardImage.color = new Color(0.5f, 0.5f, 0.5f);
-                battle.SetEff(data.eff);
+                battle.SetEff(data.id, data.eff);
                 battle.Mana -= data.mana;
                 useCard = StartCoroutine(UseCard());
             }

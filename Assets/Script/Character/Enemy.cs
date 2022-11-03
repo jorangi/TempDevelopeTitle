@@ -30,7 +30,7 @@ public class Enemy : Character
         obj.GetComponent<CardData>().ReplaceDesc(GameManager.Inst.player);
         yield return StartCoroutine(obj.GetComponent<CardData>().UseCard());
         yield return new WaitForSeconds(1);
-        GameManager.Inst.battle.SetEff(FindCard(TurnUseCard).eff);
+        GameManager.Inst.battle.SetEff(FindCard(TurnUseCard).id, FindCard(TurnUseCard).eff);
         GameManager.Inst.battle.TurnEnd();
         Destroy(obj);
     }
