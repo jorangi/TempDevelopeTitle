@@ -14,7 +14,7 @@ public class Player : Character
         set
         {
             gold = value;
-            GameManager.Inst.battle.GoldText.text = $"{value} G";
+            //GameManager.Inst.battle.GoldText.text = $"{value} G";
         }
     }
     protected override void Start()
@@ -28,7 +28,14 @@ public class Player : Character
             cards.Add(card["id"].ToString());
         }
 
-        GameManager.Inst.battle.SetRandomCard();
-        GameManager.Inst.battle.SetRandomShopCard();
+        //GameManager.Inst.battle.SetRandomCard();
+        //GameManager.Inst.battle.SetRandomShopCard();
+    }
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            HP = UnityEngine.Random.Range(0, 100);
+        }
     }
 }

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "slime",
+    "name": "슬라임",
+    "hp": 100,
+    "cards": [
+      "TestTargetAttackCard2",
+      "TestSelfHealCard1",
+      "TestAllBurnCard"
+    ],
+    "resist": [
+      "Burn 0.2"
+    ]
+  },
+  {
+    "id": "wolf",
+    "name": "늑대",
+    "hp": 150,
+    "cards": [
+      "TestTargetAttackCard1",
+      "TestSelfHealCard2",
+      "TestAllBurnCard"
+    ],
+    "resist": [
+      "Burn 0.4"
+    ]
+  },
+  {
+    "id": "cerberus",
+    "name": "케르베로스",
+    "hp": 500,
+    "cards": [
+      "TestTargetAttackCard2",
+      "TestSelfHealCard1",
+      "TestTargetInflictCard1",
+      "TestTargetReceiveCard1",
+      "TestAllBurnCard"
+    ],
+    "resist": [
+      "Burn 0.5",
+      "Poison 0.3"
+    ]
+  }
+]

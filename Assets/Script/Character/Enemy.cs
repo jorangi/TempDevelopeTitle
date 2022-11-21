@@ -14,7 +14,7 @@ public class Enemy : Character
     protected override void Start()
     {
         base.Start();
-        TurnUseCard = cards[Random.Range(0, cards.Count)];
+        //TurnUseCard = cards[Random.Range(0, cards.Count)];
     }
     public override void OnTurn()
     {

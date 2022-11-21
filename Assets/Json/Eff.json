@@ -1,0 +1,44 @@
+[
+  {
+    "id": "Damage",
+    "name": "단순 피해",
+    "desc": "대상에게 피해를 입힙니다.",
+    "effType": "Damage"
+  },
+  {
+    "id": "Heal",
+    "name": "회복",
+    "desc": "대상의 체력을 회복합니다.",
+    "effType": "Heal"
+  },
+  {
+    "id": "Mana",
+    "name": "마나",
+    "desc": "카드를 사용할 때 사용됩니다.",
+    "effType": "Independant"
+  },
+  {
+    "id": "Inflict",
+    "name": "가하는 피해량 증감",
+    "desc": "가하는 피해량이 증감합니다.",
+    "effType": "Independant"
+  },
+  {
+    "id": "Receive",
+    "name": "받는 피해량 증감",
+    "desc": "받는 피해량이 증감합니다.",
+    "effType": "Independant"
+  },
+  {
+    "id": "Burn",
+    "name": "화상",
+    "desc": "대상의 받는 피해량이 10% 증가하고, 대상의 턴 시작시 3의 피해를 입힙니다.",
+    "effType": "Burn"
+  },
+  {
+    "id": "Poison",
+    "name": "독",
+    "desc": "대상이 가하는 피해량이 10% 감소하고, 대상의 턴 시작시 2의 피해를 입힙니다.",
+    "effType": "Poison"
+  }
+]

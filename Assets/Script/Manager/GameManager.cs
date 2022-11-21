@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject obj = Instantiate(giftPrefab, giftUI);
         obj.name = gift;
-        UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(obj, "Assets/Script/Manager/GameManager.cs (52,9)", "asd");
+        obj.AddComponent(System.Type.GetType(gift));
     }
+    void OnPreCull() => GL.Clear(true, true, Color.black);
 }

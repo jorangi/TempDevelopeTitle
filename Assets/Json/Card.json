@@ -1,0 +1,321 @@
+[
+  {
+    "id": "TestTargetAttackCard1",
+    "name": "테스트용 대상 공격 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "대상에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "target" ],
+    "synergy": [ "test" ],
+    "eff": ["Target Damage Immediately 1"]
+  },
+  {
+    "id": "TestTargetAttackCard2",
+    "name": "테스트용 대상 공격 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "대상에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Damage Immediately 10" ]
+  },
+  {
+    "id": "TestTargetAttackCard3",
+    "name": "테스트용 대상 공격 카드3",
+    "mana": 1,
+    "gold": 1,
+    "desc": "대상에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Damage Immediately 50" ]
+  },
+  {
+    "id": "TestSelfAttackCard1",
+    "name": "테스트용 자신 공격 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "자신에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Damage Immediately 1" ]
+  },
+  {
+    "id": "TestSelfAttackCard2",
+    "name": "테스트용 자신 공격 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "자신에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Damage Immediately 9999999" ]
+  },
+  {
+    "id": "TestEnemiesAttackCard1",
+    "name": "테스트용 적 공격 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "적 전체에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Damage Immediately 5" ]
+  },
+  {
+    "id": "TestEnemiesAttackCard2",
+    "name": "테스트용 적 공격 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "적 전체에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Damage Immediately 9999999" ]
+  },
+  {
+    "id": "TestEntireAttackCard1",
+    "name": "테스트용 전체 공격 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "모두에게 {0_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Self Damage Immediately 5",
+      "Enemies Damage Immediately 5"
+    ]
+  },
+  {
+    "id": "TestEntireAttackCard2",
+    "name": "테스트용 전체 공격 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "자신에게 {0_3}의 피해를 입힌다.\n적 전체에게 {1_3}의 피해를 입힌다.",
+    "category": [ "test", "basic", "damage", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Self Damage Immediately 9999",
+      "Enemies Damage Immediately 999999"
+    ]
+  },
+  {
+    "id": "TestTargetHealCard1",
+    "name": "테스트용 대상 회복 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "대상의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Heal Immediately 1" ]
+  },
+  {
+    "id": "TestTargetHealCard2",
+    "name": "테스트용 대상 회복 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "대상의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Heal Immediately 999999" ]
+  },
+  {
+    "id": "TestSelfHealCard1",
+    "name": "테스트용 자신 회복 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "자신의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Heal Immediately 1" ]
+  },
+  {
+    "id": "TestSelfHealCard2",
+    "name": "테스트용 자신 회복 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "자신의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Heal Immediately 9999999" ]
+  },
+  {
+    "id": "TestEnemiesHealCard1",
+    "name": "테스트용 적 회복 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "적 전체의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Heal Immediately 1" ]
+  },
+  {
+    "id": "TestEnemiesHealCard2",
+    "name": "테스트용 적 회복 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "적 전체의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Heal Immediately 9999999" ]
+  },
+  {
+    "id": "TestEntireHealCard1",
+    "name": "테스트용 전체 회복 카드1",
+    "mana": 1,
+    "gold": 1,
+    "desc": "모두의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Self Heal Immediately 1",
+      "Enemies Heal Immediately 1"
+    ]
+  },
+  {
+    "id": "TestEntireHealCard2",
+    "name": "테스트용 전체 회복 카드2",
+    "mana": 1,
+    "gold": 1,
+    "desc": "모두의 체력을 {0_3}만큼 회복한다.",
+    "category": [ "test", "basic", "heal", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Self Heal Immediately 999999",
+      "Enemies Heal Immediately 999999"
+    ]
+  },
+  {
+    "id": "TestManaRecoverCard",
+    "name": "테스트용 마나 회복 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "[mana]를 {0_3}만큼 획득한다.",
+    "category": [ "test", "basic", "mana", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Mana Immediately 3" ]
+  },
+  {
+    "id": "TestTargetInflictCard1",
+    "name": "테스트용 대상 가하는피해량 감소 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상이 가하는 피해량이 {0_3}턴간 {0_4}% 감소한다.",
+    "category": [ "test", "basic", "inflict", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Inflict Immediately 3t -25" ]
+  },
+  {
+    "id": "TestTargetInflictCard2",
+    "name": "테스트용 대상 가하는피해량 증가 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상이 가하는 피해량이 {0_3}턴간 {0_4}% 증가한다.",
+    "category": [ "test", "basic", "inflict", "target" ],
+    "synergy": [ "test" ],
+    "eff": [ "Target Inflict Immediately 3t 25" ]
+  },
+  {
+    "id": "TestSelfInflictCard1",
+    "name": "테스트용 자신 가하는피해량 감소 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "자신이 가하는 피해량이 {0_3}턴간 {0_4}% 감소한다.",
+    "category": [ "test", "basic", "inflict", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Inflict Immediately 3t -25" ]
+  },
+  {
+    "id": "TestSelfInflictCard2",
+    "name": "테스트용 자신 가하는피해량 증가 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "자신이 가하는 피해량이 {0_3}턴간 {0_4}% 증가한다.",
+    "category": [ "test", "basic", "inflict", "self" ],
+    "synergy": [ "test" ],
+    "eff": [ "Self Inflict Immediately 3t 25" ]
+  },
+  {
+    "id": "TestEnemiesInflictCard1",
+    "name": "테스트용 적 전체 가하는피해량 감소 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "적 전체가 가하는 피해량이 {0_3}턴간 {0_4}% 감소한다.",
+    "category": [ "test", "basic", "inflict", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Inflict Immediately 3t -25" ]
+  },
+  {
+    "id": "TestSelfInflictCard2",
+    "name": "테스트용 적 전체 가하는피해량 증가 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "적 전체가 가하는 피해량이 {0_3}턴간 {0_4}% 증가한다.",
+    "category": [ "test", "basic", "inflict", "enemies" ],
+    "synergy": [ "test" ],
+    "eff": [ "Enemies Inflict Immediately 3t 25" ]
+  },
+  {
+    "id": "TestEntireInflictCard",
+    "name": "테스트용 전체 가하는피해량 증감 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "자신이 가하는 피해량이 {0_3}턴간 {0_4}% 증가한다.\n적 전체가 가하는 피해량이 {1_3}턴간 {1_4}% 감소한다.",
+    "category": [ "test", "basic", "inflict", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Self Inflict Immediately 2t 10",
+      "Enemies Inflict Immediately 3t -25"
+    ]
+  },
+  {
+    "id": "TestAllReceiveCard",
+    "name": "테스트용 모든 대상타입 받는피해량 증감 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상이 받는 피해량이 {0_3}턴간 {0_4}% 증가한다.\n자신이 받는 피해량이 {1_3}턴간 {1_4}% 감소한다.\n적 전체가 받는 피해량이 {2_3}턴간 {2_4}% 증가한다.",
+    "category": [ "test", "basic", "inflict", "target", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Target Receive Immediately 2t 10",
+      "Self Receive Immediately 3t -25",
+      "Enemies Receive Immediately 1t 10"
+    ]
+  },
+  {
+    "id": "TestTargetBurnCard",
+    "name": "테스트용 대상 화상 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상에게 [burn] {0_3}을 부여한다.",
+    "category": [ "test", "basic", "burn", "target"],
+    "synergy": [ "test" ],
+    "eff": [
+      "Target Burn Immediately 120"
+    ]
+  },
+  {
+    "id": "TestAllBurnCard",
+    "name": "테스트용 모든 대상 타입 화상 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상에게 {0_3}턴간 [burn]을 부여한다.\n자신에게 [burn] {1_3}을 부여한다.\n적 전체에게 [burn] {2_3}을 부여한다.",
+    "category": [ "test", "basic", "burn", "target", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Target Burn Immediately 3t",
+      "Self Burn Immediately 20",
+      "Enemies Burn Immediately 120"
+    ]
+  },
+  {
+    "id": "TestAllPoisonCard",
+    "name": "테스트용 모든 대상 타입 독 카드",
+    "mana": 0,
+    "gold": 1,
+    "desc": "대상에게 {0_3}턴간 [poison]을 부여한다.\n자신에게 [poison] {1_3}을 부여한다.\n적 전체에게 [poison] {2_3}을 부여한다.",
+    "category": [ "test", "basic", "poison", "target", "entire" ],
+    "synergy": [ "test" ],
+    "eff": [
+      "Target Poison Immediately 3t",
+      "Self Poison Immediately 20",
+      "Enemies Poison Immediately 120"
+    ]
+  }
+]

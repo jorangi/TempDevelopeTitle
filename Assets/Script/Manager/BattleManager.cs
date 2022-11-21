@@ -10,12 +10,24 @@ using System.Collections.Specialized;
 
 public class BattleManager : MonoBehaviour
 {
+    public GameObject CategoryInInfo;
     public GameObject EnemyObject;
     public GameObject CardUI;
     public GameObject ShopUI;
     public GameObject EnemyInfo;
     public GameObject UseCardUI;
     public GameObject CardPrefab;
+    public GameObject UnitFrame;
+    public GameObject characterInfo;
+    public Transform playersInfo;
+    public Transform enemiesInfo;
+
+    public GameObject PlayerField;
+    public GameObject EnemyField;
+
+    public Character[,] playerField = new Character[3, 3];
+    public Character[,] enemyField = new Character[3, 3];
+
     public Transform Gifts;
 
     public List<Character> order;
@@ -60,7 +72,7 @@ public class BattleManager : MonoBehaviour
                     {
                         order[i].TurnUseCard = order[i].cards[UnityEngine.Random.Range(0, order[i].cards.Count)];
                     }
-                    SetRandomCard();
+                    //SetRandomCard();
                 }
                 else if(value == order.Count)
                 {
@@ -69,29 +81,29 @@ public class BattleManager : MonoBehaviour
             }
             Target = null;
             index = value;
-            Caster = order[index];
-            if (Caster.hp == 0)
-            {
-                Index++;
-                return;
-            }
-            else
-            {
-                TurnStart();
-            }
-            if (index != 0)
-            {
-                CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = false;
-                CardUI.transform.parent.Find("DisinteractPanel").SetAsLastSibling();
-                CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(true);
-                Target = GameManager.Inst.player;
-                order[index].OnTurn();
-            }
-            else
-            {
-                CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = true;
-                CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(false);
-            }
+            //Caster = order[index];
+            //if (Caster.hp == 0)
+            //{
+            //    Index++;
+            //    return;
+            //}
+            //else
+            //{
+            //    TurnStart();
+            //}
+            //if (index != 0)
+            //{
+            //    CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            //    CardUI.transform.parent.Find("DisinteractPanel").SetAsLastSibling();
+            //    CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(true);
+            //    Target = GameManager.Inst.player;
+            //    order[index].OnTurn();
+            //}
+            //else
+            //{
+            //    CardUI.transform.parent.GetComponent<CanvasGroup>().blocksRaycasts = true;
+            //    CardUI.transform.parent.Find("DisinteractPanel").gameObject.SetActive(false);
+            //}
         }
     }
     public int Mana
@@ -100,7 +112,7 @@ public class BattleManager : MonoBehaviour
         set
         {
             mana = value;
-            ManaText.text = $"{value}/{maxMana}";
+            //ManaText.text = $"{value}/{maxMana}";
         }
     }
 
@@ -110,17 +122,69 @@ public class BattleManager : MonoBehaviour
         synergies = new();
         Turn = 0;
         Caster = FindObjectOfType<Player>();
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                playerField[i, j] = null;
+                enemyField[i, j] = null;
+            }
+        }
     }
     private void Start()
     {
         order = FindObjectsOfType<Character>().ToList();
         Index = 0;
         Mana = maxMana;
-        GameManager.Inst.player.HP = GameManager.Inst.player.mhp;
+        //GameManager.Inst.player.HP = GameManager.Inst.player.mhp;
 
-        EnemySpawn("slime");
-        EnemySpawn("cerberus");
-        EnemySpawn("wolf");
+        UnitSpawn("player");
+        UnitSpawn("enemy");
+
+        //EnemySpawn("slime");
+        //EnemySpawn("cerberus");
+        //EnemySpawn("wolf");
+    }
+    public void UnitSpawn(string _name)
+    {
+        string[] players = { "player"};
+        GameObject unit = Instantiate(UnitFrame);
+        unit.name = _name;
+        if(Array.IndexOf(players, _name) > -1)
+        {
+            GameObject info = Instantiate(characterInfo, playersInfo);
+            info.name = "info";
+            unit.transform.SetParent(PlayerField.transform);
+            Character character = unit.AddComponent<Player>();
+            character.Info = info;
+            character.Initialize();
+        }
+        else
+        {
+            GameObject info = Instantiate(characterInfo, enemiesInfo);
+            info.name = "info";
+            unit.transform.SetParent(EnemyField.transform);
+            Character character = unit.AddComponent<Enemy>();
+            character.Info = info;
+            character.Initialize();
+        }
+
+        SetUnit(unit.GetComponent<Character>(), new(UnityEngine.Random.Range(0, 3), UnityEngine.Random.Range(0, 3)));
+    }
+    public void SetUnit(Character unit, Vector2Int pos)
+    {
+        unit.transform.localPosition = new(-1.35f + pos.x * 1.35f, -1.35f + pos.y * 1.35f, 0);
+        unit.GetComponent<Character>().pos = pos;
+
+        if (unit is Player)
+        {
+            playerField[pos.x, pos.y] = unit;
+        }
+        else
+        {
+            enemyField[pos.x, pos.y] = unit;
+        }
     }
     public void EnemySpawn(string id)
     {
@@ -826,21 +890,21 @@ public class BattleManager : MonoBehaviour
     }
     public void ShowCharacterInfo(Character data)
     {
-        EnemyInfo.SetActive(true);
-        EnemyInfo.transform.Find("EnemyInfo").Find("Inflict").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.giveEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.giveEff[(int)Enums.effType.Damage].add}";
-        EnemyInfo.transform.Find("EnemyInfo").Find("Receive").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.takeEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Damage].add}";
-        EnemyInfo.transform.Find("EnemyInfo").Find("Burn").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Burn].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Burn].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Burn].add}";
-        EnemyInfo.transform.Find("EnemyInfo").Find("Poison").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Poison].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Poison].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Poison].add}";
-        if(data.CompareTag("Enemy"))
-        {
-            EnemyInfo.transform.Find("Card").gameObject.SetActive(true);
-            EnemyInfo.transform.Find("Card").GetComponent<CardDetail>().SetCardData(data.TurnUseCard);
-        }
-        else
-        {
-            EnemyInfo.transform.Find("Card").gameObject.SetActive(false);
-            EnemyInfo.transform.Find("Descs").gameObject.SetActive(false);
-        }
+        //EnemyInfo.SetActive(true);
+        //EnemyInfo.transform.Find("EnemyInfo").Find("Inflict").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.giveEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.giveEff[(int)Enums.effType.Damage].add}";
+        //EnemyInfo.transform.Find("EnemyInfo").Find("Receive").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.takeEff[(int)Enums.effType.Damage].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Damage].add}";
+        //EnemyInfo.transform.Find("EnemyInfo").Find("Burn").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Burn].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Burn].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Burn].add}";
+        //EnemyInfo.transform.Find("EnemyInfo").Find("Poison").transform.Find("Value").GetComponent<TextMeshProUGUI>().text = $"{data.effResist[(int)Enums.effType.Poison].per * 100.0f}% | {data.takeEff[(int)Enums.effType.Poison].per * 100.0f}% + {data.takeEff[(int)Enums.effType.Poison].add}";
+        //if(data.CompareTag("Enemy"))
+        //{
+        //    EnemyInfo.transform.Find("Card").gameObject.SetActive(true);
+        //    EnemyInfo.transform.Find("Card").GetComponent<CardDetail>().SetCardData(data.TurnUseCard);
+        //}
+        //else
+        //{
+        //    EnemyInfo.transform.Find("Card").gameObject.SetActive(false);
+        //    EnemyInfo.transform.Find("Descs").gameObject.SetActive(false);
+        //}
     }
     public void OnSynergy()
     {
